@@ -360,7 +360,7 @@ void ObjectEventTurnByLocalIdAndMap(u8, u8, u8, u8);
 const struct ObjectEventGraphicsInfo *GetObjectEventGraphicsInfo(u8);
 void npc_by_local_id_and_map_set_field_1_bit_x20(u8, u8, u8, u8);
 void ObjectEventGetLocalIdAndMap(struct ObjectEvent *, void *, void *, void *);
-void sub_805BCC0(s16 x, s16 y);
+void AllowObjectAtPosTriggerGroundEffects(s16 x, s16 y);
 void sub_805BCF0(u8, u8, u8, u8);
 void sub_805BD48(u8, u8, u8);
 void sub_805BD90(u8 localId, u8 mapNum, u8 mapGroup, s16 x, s16 y);

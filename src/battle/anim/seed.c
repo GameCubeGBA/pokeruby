@@ -67,7 +67,7 @@ void AnimLeechSeed(struct Sprite* sprite)
 
 static void AnimLeechSeedStep(struct Sprite* sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
     {
         sprite->invisible = TRUE;
         sprite->data[0] = 10;

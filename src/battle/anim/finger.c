@@ -245,7 +245,7 @@ static void sub_80CF228(struct Sprite* sprite)
         sprite->data[1] = 0;
         StartSpriteAnim(sprite, sprite->data[0]);
         StoreSpriteCallbackInData(sprite, sub_80CF264);
-        sprite->callback = sub_8078600;
+        sprite->callback = RunStoredCallbackWhenAnimEnds;
     }
 }
 

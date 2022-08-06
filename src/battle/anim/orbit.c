@@ -137,7 +137,7 @@ void sub_80CACEC(u8 taskId)
     }
     else
     {
-        if (GetBattlerPosition_permutated(gBattleAnimTarget) == 1)
+        if (GetBattlerSpriteBGPriorityRank(gBattleAnimTarget) == 1)
         {
             REG_BG2CNT_BITFIELD.priority = 3;
         }

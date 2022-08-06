@@ -166,7 +166,7 @@ static void AnimBonemerangProjectile(struct Sprite *sprite)
 
 static void AnimBonemerangProjectileStep(struct Sprite *sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
     {
         sprite->x += sprite->x2;
         sprite->y += sprite->y2;
@@ -183,7 +183,7 @@ static void AnimBonemerangProjectileStep(struct Sprite *sprite)
 
 static void AnimBonemerangProjectileEnd(struct Sprite *sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
         DestroyAnimSprite(sprite);
 }
 
@@ -319,7 +319,7 @@ static void sub_80E1284(u8 taskId)
     {
     case 0:
         task->data[10] = GetAnimBattlerSpriteId(0);
-        task->data[11] = GetBattlerPosition_permutated(gBattleAnimAttacker);
+        task->data[11] = GetBattlerSpriteBGPriorityRank(gBattleAnimAttacker);
         if (task->data[11] == 1)
         {
             task->data[12] = gBattle_BG1_X;
@@ -331,7 +331,7 @@ static void sub_80E1284(u8 taskId)
             task->data[13] = gBattle_BG2_Y;
         }
 
-        var0 = sub_8077FC0(gBattleAnimAttacker);
+        var0 = GetBattlerYCoordWithElevation(gBattleAnimAttacker);
         task->data[14] = var0 - 32;
         task->data[15] = var0 + 32;
         if (task->data[14] < 0)
@@ -388,7 +388,7 @@ static void sub_80E143C(u8 taskId)
     gSprites[spriteId].x2 = 0;
     gSprites[spriteId].y2 = 0;
 
-    if (GetBattlerPosition_permutated(gBattleAnimAttacker) == 1)
+    if (GetBattlerSpriteBGPriorityRank(gBattleAnimAttacker) == 1)
         gBattle_BG1_Y = 0;
     else
         gBattle_BG2_Y = 0;
@@ -435,13 +435,13 @@ static void sub_80E1560(u8 taskId)
     {
     case 0:
         task->data[10] = GetAnimBattlerSpriteId(0);
-        task->data[11] = GetBattlerPosition_permutated(gBattleAnimAttacker);
+        task->data[11] = GetBattlerSpriteBGPriorityRank(gBattleAnimAttacker);
         if (task->data[11] == 1)
             task->data[12] = gBattle_BG1_X;
         else
             task->data[12] = gBattle_BG2_X;
 
-        var0 =  sub_8077FC0(gBattleAnimAttacker);
+        var0 =  GetBattlerYCoordWithElevation(gBattleAnimAttacker);
         task->data[14] = var0 - 32;
         task->data[15] = var0 + 32;
         task->data[0]++;
@@ -532,7 +532,7 @@ static void AnimFissureDirtPlumeParticle(struct Sprite *sprite)
     }
 
     sprite->x = GetBattlerSpriteCoord(battler, 2) + xOffset;
-    sprite->y = sub_8077FC0(battler) + 30;
+    sprite->y = GetBattlerYCoordWithElevation(battler) + 30;
     sprite->data[0] = gBattleAnimArgs[5];
     sprite->data[2] = sprite->x + gBattleAnimArgs[2];
     sprite->data[4] = sprite->y + gBattleAnimArgs[3];
@@ -543,7 +543,7 @@ static void AnimFissureDirtPlumeParticle(struct Sprite *sprite)
 
 static void AnimFissureDirtPlumeParticleStep(struct Sprite *sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
         DestroyAnimSprite(sprite);
 }
 
@@ -563,7 +563,7 @@ static void AnimDigDirtMound(struct Sprite *sprite)
         battler = gBattleAnimTarget;
 
     sprite->x = GetBattlerSpriteCoord(battler, 0) - 16 + (gBattleAnimArgs[1] * 32);
-    sprite->y = sub_8077FC0(battler) + 32;
+    sprite->y = GetBattlerYCoordWithElevation(battler) + 32;
     sprite->oam.tileNum += gBattleAnimArgs[1] * 8;
     StoreSpriteCallbackInData(sprite, DestroyAnimSprite);
     sprite->data[0] = gBattleAnimArgs[2];

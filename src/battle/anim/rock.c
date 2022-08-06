@@ -750,7 +750,7 @@ static void sub_80DD774(struct Task *task)
 
 void sub_80DD87C(struct Sprite *sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
     {
         u8 taskId = FindTaskIdByFunc(sub_80DD604);
         if (taskId != 0xFF)

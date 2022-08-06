@@ -1537,11 +1537,11 @@ static void InitIceBallAnim(struct Sprite *sprite)
 // Throws the ball of ice in Ice Ball.
 static void AnimThrowIceBall(struct Sprite *sprite)
 {
-    if (!TranslateAnimArc(sprite))
+    if (!TranslateAnimHorizontalArc(sprite))
         return;
 
     StartSpriteAnim(sprite, 1);
-    sprite->callback = sub_8078600;
+    sprite->callback = RunStoredCallbackWhenAnimEnds;
     StoreSpriteCallbackInData(sprite, DestroyAnimSprite);
 }
 

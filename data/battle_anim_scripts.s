@@ -964,7 +964,7 @@ _81C85E9:
 	delay 2
 	createvisualtask sub_80E4200, 2
 	jumpargeq 7, 1, _81C8620
-	createvisualtask sub_812C924, 2
+	createvisualtask AnimTask_IsTargetPlayerSide, 2
 	jumpargeq 7, 0, _81C8612
 	jumpargeq 7, 1, _81C8619
 _81C8611:
@@ -1656,7 +1656,7 @@ Move_DEFENSE_CURL: @ 81C977C
 	loadspritegfx ANIM_TAG_ECLIPSING_ORB
 	loopsewithpan SE_M_TRI_ATTACK, SOUND_PAN_ATTACKER, 18, 3
 	createvisualtask sub_80E0E24, 5, 0, 0
-	createvisualtask sub_812D350, 5
+	createvisualtask AnimTask_DefenseCurlDeformMon, 5
 	waitforvisualfinish
 	createsprite gBattleAnimSpriteTemplate_8402498, ANIM_ATTACKER, 2, 0, 6, 0, 1
 	waitforvisualfinish
@@ -2805,7 +2805,7 @@ Move_MINIMIZE: @ 81CB352
 Move_METRONOME: @ 81CB365
 	loadspritegfx ANIM_TAG_FINGER
 	loadspritegfx ANIM_TAG_THOUGHT_BUBBLE
-	createsprite gBattleAnimSpriteTemplate_83D7220, ANIM_ATTACKER, 11, 0, 100
+	createsprite gThoughtBubbleSpriteTemplate, ANIM_ATTACKER, 11, 0, 100
 	playsewithpan SE_M_METRONOME, SOUND_PAN_ATTACKER
 	delay 6
 	createsprite gBattleAnimSpriteTemplate_83D72C8, ANIM_ATTACKER, 12, 0
@@ -3334,7 +3334,7 @@ Move_RAPID_SPIN: @ 81CBD41
 	loadspritegfx ANIM_TAG_RAPID_SPIN
 	monbg ANIM_ATTACKER
 	createsprite gBattleAnimSpriteTemplate_84023E8, ANIM_ATTACKER, 2, 0, 0, 32, -32, 40, -2
-	createvisualtask sub_812CDC8, 2, 0, 2, 0
+	createvisualtask AnimTask_RapinSpinMonElevation, 2, 0, 2, 0
 	loopsewithpan SE_M_RAZOR_WIND2, SOUND_PAN_ATTACKER, 8, 4
 	waitforvisualfinish
 	createsprite gBasicHitSplatSpriteTemplate, ANIM_TARGET, 2, 0, 0, 1, 2
@@ -3342,7 +3342,7 @@ Move_RAPID_SPIN: @ 81CBD41
 	playsewithpan SE_M_DOUBLE_SLAP, SOUND_PAN_TARGET
 	waitforvisualfinish
 	delay 8
-	createvisualtask sub_812CDC8, 2, 0, 2, 1
+	createvisualtask AnimTask_RapinSpinMonElevation, 2, 0, 2, 1
 	loopsewithpan SE_M_RAZOR_WIND2, SOUND_PAN_ATTACKER, 8, 4
 	waitforvisualfinish
 	clearmonbg ANIM_ATTACKER
@@ -3486,7 +3486,7 @@ Move_HAIL: @ 81CC076
 Move_TORMENT: @ 81CC0AE
 	loadspritegfx ANIM_TAG_ANGER
 	loadspritegfx ANIM_TAG_THOUGHT_BUBBLE
-	createvisualtask sub_812D008, 2
+	createvisualtask AnimTask_TormentAttacker, 2
 	waitforvisualfinish
 	createvisualtask AnimTask_BlendMonInAndOut, 2, ANIM_TARGET, 31, 10, 1, 1
 	createsprite gBattleAnimSpriteTemplate_83D7798, ANIM_TARGET, 2, 1, -20, -28
@@ -3591,7 +3591,7 @@ Move_TAUNT: @ 81CC26B
 	loadspritegfx ANIM_TAG_FINGER_2
 	loadspritegfx ANIM_TAG_THOUGHT_BUBBLE
 	loadspritegfx ANIM_TAG_ANGER
-	createsprite gBattleAnimSpriteTemplate_83D7220, ANIM_ATTACKER, 11, 0, 45
+	createsprite gThoughtBubbleSpriteTemplate, ANIM_ATTACKER, 11, 0, 45
 	playsewithpan SE_M_METRONOME, SOUND_PAN_ATTACKER
 	delay 6
 	createsprite gBattleAnimSpriteTemplate_83D7358, ANIM_ATTACKER, 12, 0
@@ -3903,7 +3903,7 @@ Move_LUSTER_PURGE: @ 81CC95B
 	loadspritegfx ANIM_TAG_IMPACT
 	fadetobg BG_PSYCHIC
 	waitbgfadeout
-	createvisualtask sub_812C624, 5
+	createvisualtask AnimTask_FadeScreenToWhite, 5
 	waitbgfadein
 	monbg ANIM_ATTACKER
 	setalpha 12, 8
@@ -7828,7 +7828,7 @@ Move_INGRAIN: @ 81D255A
 
 Move_PRESENT: @ 81D260B
 	loadspritegfx ANIM_TAG_ITEM_BAG
-	createvisualtask sub_812C960, 2
+	createvisualtask AnimTask_IsHealingMove, 2
 	createsprite gBattleAnimSpriteTemplate_83D671C, ANIM_TARGET, 2, 0, -5, 10, 2, -1
 	playsewithpan SE_M_TAIL_WHIP, SOUND_PAN_ATTACKER
 	delay 14
@@ -7961,7 +7961,7 @@ Move_HYPER_FANG: @ 81D29A8
 	delay 2
 	createvisualtask sub_80E4200, 2
 	jumpargeq 7, 1, _81D2A08
-	createvisualtask sub_812C924, 2
+	createvisualtask AnimTask_IsTargetPlayerSide, 2
 	jumpargeq 7, 0, _81D29FA
 	goto _81D2A01
 _81D29D6:
@@ -8068,7 +8068,7 @@ Move_WILL_O_WISP: @ 81D2B83
 Move_ENCORE: @ 81D2C41
 	loadspritegfx ANIM_TAG_SPOTLIGHT
 	loadspritegfx ANIM_TAG_TAG_HAND
-	createvisualtask sub_812CC44, 2
+	createvisualtask AnimTask_CreateSpotlight, 2
 	createvisualtask sub_80E2D78, 2, 248, 3, 0, 10, 0
 	waitforvisualfinish
 	createsprite gBattleAnimSpriteTemplate_840238C, ANIM_TARGET, 2, 0, -8
@@ -8082,7 +8082,7 @@ Move_ENCORE: @ 81D2C41
 	waitforvisualfinish
 	createvisualtask sub_80E2D78, 2, 248, 3, 10, 0, 1
 	waitforvisualfinish
-	createvisualtask sub_812CCA8, 2
+	createvisualtask AnimTask_RemoveSpotlight, 2
 	end
 
 Move_TRICK: @ 81D2CE8
@@ -8374,7 +8374,7 @@ Move_FLATTER: @ 81D332C
 	loadspritegfx ANIM_TAG_SPOTLIGHT
 	loadspritegfx ANIM_TAG_CONFETTI
 	createvisualtask sub_812B340, 5, 223, 63
-	createvisualtask sub_812CC44, 2
+	createvisualtask AnimTask_CreateSpotlight, 2
 	createvisualtask sub_80E2D78, 2, 248, 3, 0, 10, 0
 	waitforvisualfinish
 	createsprite gBattleAnimSpriteTemplate_8402720, ANIM_TARGET, 2, 0, -8, 80
@@ -8408,7 +8408,7 @@ Move_FLATTER: @ 81D332C
 	waitforvisualfinish
 	createvisualtask sub_80E2D78, 2, 248, 3, 10, 0, 1
 	waitforvisualfinish
-	createvisualtask sub_812CCA8, 2
+	createvisualtask AnimTask_RemoveSpotlight, 2
 	end
 _81D3415:
 	createsprite gBattleAnimSpriteTemplate_8402708, ANIM_ATTACKER, 40, 0
@@ -8843,7 +8843,7 @@ _81D3E76:
 	delay 1
 	createvisualtask sub_80E4200, 2
 	jumpargeq 7, 1, _81D3F2F
-	createvisualtask sub_812C924, 2
+	createvisualtask AnimTask_IsTargetPlayerSide, 2
 	jumpargeq 7, 0, _81D3F21
 	jumpargeq 7, 1, _81D3F28
 _81D3EA4:
@@ -9489,7 +9489,7 @@ Move_PSYCHO_BOOST: @ 81D51C7
 	monbg ANIM_BATTLER_ATK_PARTNER
 	fadetobg BG_PSYCHIC
 	waitbgfadeout
-	createvisualtask sub_812C624, 5
+	createvisualtask AnimTask_FadeScreenToWhite, 5
 	waitbgfadein
 	delay 6
 	createvisualtask sub_80E1F8C, 2, 1, 2, 8, 0, 10, 0
@@ -10188,7 +10188,7 @@ Unknown_81D622B: @ 81D622B
 Unknown_81D6233: @ 81D6233
 	createvisualtask sub_80E4200, 2
 	jumpargeq 7, 1, Unknown_81D6258
-	createvisualtask sub_812C924, 2
+	createvisualtask AnimTask_IsTargetPlayerSide, 2
 	jumpargeq 7, 0, Unknown_81D6266
 	goto Unknown_81D625F
 

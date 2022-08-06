@@ -211,7 +211,7 @@ void sub_80D9D70(struct Sprite *sprite)
 
 static void sub_80D9DD4(struct Sprite *sprite) // same as sub_80D9E78
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
         DestroyAnimSprite(sprite);
 }
 
@@ -239,7 +239,7 @@ void sub_80D9DF0(struct Sprite *sprite)
 
 static void sub_80D9E78(struct Sprite *sprite) // same as sub_80D9DD4
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
         DestroyAnimSprite(sprite);
 }
 

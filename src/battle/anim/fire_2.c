@@ -455,7 +455,7 @@ static void sub_80D54E0(u8 taskId) // animate Move_ERUPTION?
         if (!sub_8079C74(task))
         {
             gSprites[task->data[15]].y = task->data[4];
-            sub_8078F40(task->data[15]);
+            ResetSpriteRotScale(task->data[15]);
 
             task->data[2] = 0;
             task->data[0]++;

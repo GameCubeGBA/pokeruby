@@ -278,7 +278,7 @@ void sub_80CA9A8(struct Sprite* sprite)
 
 static void sub_80CA9F8(struct Sprite* sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
         DestroyAnimSprite(sprite);
 }
 

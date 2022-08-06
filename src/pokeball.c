@@ -298,7 +298,7 @@ const struct SpriteTemplate gBallSpriteTemplates[] =
 };
 
 extern void InitAnimArcTranslation();
-extern bool8 TranslateAnimArc(struct Sprite *);
+extern bool8 TranslateAnimHorizontalArc(struct Sprite *);
 
 static void SendOutMonAnimation(u8);
 static void sub_80466E8(struct Sprite *);
@@ -409,7 +409,7 @@ static void SendOutMonAnimation(u8 taskId)
 
 static void objc_0804ABD4(struct Sprite *sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
     {
         u8 taskId = sprite->oam.affineParam;
         u8 r5 = gTasks[taskId].data[4];
@@ -885,7 +885,7 @@ static void SendOutPlayerMonAnimation_Step1(struct Sprite *sprite)
     }
     else
     {
-        if (TranslateAnimArc(sprite))
+        if (TranslateAnimHorizontalArc(sprite))
         {
             sprite->x += sprite->x2;
             sprite->y += sprite->y2;

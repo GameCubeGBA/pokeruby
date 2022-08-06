@@ -575,13 +575,13 @@ void sub_813F798(u8 taskId)
         break;
     case 1:
         gTasks[taskId].data[10] += 0x30;
-        obj_id_set_rotscale(spriteId, gTasks[taskId].data[10], gTasks[taskId].data[10], 0);
+        SetSpriteRotScale(spriteId, gTasks[taskId].data[10], gTasks[taskId].data[10], 0);
         sub_8079A64(spriteId);
         if (gTasks[taskId].data[10] >= 0x2D0)
             gTasks[taskId].data[0]++;
         break;
     case 2:
-        sub_8078F40(spriteId);
+        ResetSpriteRotScale(spriteId);
         gSprites[spriteId].invisible = TRUE;
         DestroyAnimVisualTask(taskId);
         break;
@@ -771,7 +771,7 @@ static void sub_813FDC0(struct Sprite *sprite)
     u8 ballIndex;
     int ballIndex2; // extra var needed to match
 
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
     {
         if (ewram17840.unk8 == 5)
         {
@@ -839,14 +839,14 @@ static void sub_813FEC8(struct Sprite *sprite)
         break;
     case 1:
         gTasks[taskId].data[10] += 0x20;
-        obj_id_set_rotscale(spriteId, gTasks[taskId].data[10], gTasks[taskId].data[10], 0);
+        SetSpriteRotScale(spriteId, gTasks[taskId].data[10], gTasks[taskId].data[10], 0);
         gTasks[taskId].data[3] += gTasks[taskId].data[2];
         gSprites[spriteId].y2 = -gTasks[taskId].data[3] >> 8;
         if (gTasks[taskId].data[10] >= 0x480)
             gTasks[taskId].data[0]++;
         break;
     case 2:
-        sub_8078F40(spriteId);
+        ResetSpriteRotScale(spriteId);
         gSprites[spriteId].invisible = TRUE;
         gTasks[taskId].data[0]++;
         break;
@@ -1814,7 +1814,7 @@ void sub_81416C4(u8 taskId)
     switch (gTasks[taskId].data[15])
     {
     case 0:
-        if (GetBattlerPosition_permutated(gBattleAnimAttacker) == 1)
+        if (GetBattlerSpriteBGPriorityRank(gBattleAnimAttacker) == 1)
             REG_BLDCNT = 0x3F42;
         else
             REG_BLDCNT = 0x3F44;
@@ -2047,7 +2047,7 @@ static void sub_8141CBC(struct Sprite *sprite)
 
 static void sub_8141CF4(struct Sprite *sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
     {
         sprite->data[0] = 0;
         sprite->invisible = TRUE;

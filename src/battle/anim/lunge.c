@@ -89,7 +89,7 @@ static void sub_80CD81C(struct Sprite* sprite)
     }
 
     sprite->data[5] += sprite->data[4];
-    obj_id_set_rotscale(sprite->data[3], 0x100, 0x100, sprite->data[5]);
+    SetSpriteRotScale(sprite->data[3], 0x100, 0x100, sprite->data[5]);
     sub_8078F9C(sprite->data[3]);
     if (++sprite->data[0] > 3)
     {
@@ -136,11 +136,11 @@ static void sub_80CD91C(struct Sprite* sprite)
     }
 
     sprite->data[5] += sprite->data[4];
-    obj_id_set_rotscale(sprite->data[3], 0x100, 0x100, sprite->data[5]);
+    SetSpriteRotScale(sprite->data[3], 0x100, 0x100, sprite->data[5]);
     sub_8078F9C(sprite->data[3]);
     if (++sprite->data[0] > 2)
     {
-        sub_8078F40(sprite->data[3]);
+        ResetSpriteRotScale(sprite->data[3]);
         sprite->callback = sub_80CD9B8;
     }
 }
@@ -170,7 +170,7 @@ static void sub_80CD9D4(struct Sprite* sprite)
         sprite->data[0]++;
     case 1:
         sprite->data[5] += sprite->data[4];
-        obj_id_set_rotscale(sprite->data[2], 0x100, 0x100, sprite->data[5]);
+        SetSpriteRotScale(sprite->data[2], 0x100, 0x100, sprite->data[5]);
         sub_8078F9C(sprite->data[2]);
         if (++sprite->data[1] > 3)
         {
@@ -181,11 +181,11 @@ static void sub_80CD9D4(struct Sprite* sprite)
         break;
     case 2:
         sprite->data[5] += sprite->data[4];
-        obj_id_set_rotscale(sprite->data[2], 0x100, 0x100, sprite->data[5]);
+        SetSpriteRotScale(sprite->data[2], 0x100, 0x100, sprite->data[5]);
         sub_8078F9C(sprite->data[2]);
         if (++sprite->data[1] > 3)
         {
-            sub_8078F40(sprite->data[2]);
+            ResetSpriteRotScale(sprite->data[2]);
             DestroyAnimSprite(sprite);
         }
         break;
@@ -255,7 +255,7 @@ void sub_80CDB60(u8 taskId)
         if (task->data[3])
         {
             task->data[4] += task->data[5];
-            obj_id_set_rotscale(task->data[0], 0x100, 0x100, task->data[4]);
+            SetSpriteRotScale(task->data[0], 0x100, 0x100, task->data[4]);
             sub_8078F9C(task->data[0]);
             task->data[3]--;
         }
@@ -327,13 +327,13 @@ void sub_80CDD20(u8 taskId)
     if (task->data[3])
     {
         task->data[4] -= task->data[5];
-        obj_id_set_rotscale(task->data[0], 0x100, 0x100, task->data[4]);
+        SetSpriteRotScale(task->data[0], 0x100, 0x100, task->data[4]);
         sub_8078F9C(task->data[0]);
         task->data[3]--;
     }
     else
     {
-        sub_8078F40(task->data[0]);
+        ResetSpriteRotScale(task->data[0]);
         DestroyAnimVisualTask(taskId);
     }
 }
