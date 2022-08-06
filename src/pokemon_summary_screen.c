@@ -54,7 +54,7 @@ static void sub_80A1DCC(struct Pokemon *);
 static void sub_809FE80(void);
 static void sub_80A00A4(void);
 static void sub_80A0390(void);
-extern u8 SummaryScreen_CreatePokemonSprite(struct Pokemon *);
+static u8 SummaryScreen_CreatePokemonSprite(struct Pokemon *);
 static void SummaryScreen_PrintColoredIntPixelCoords(s32, u8, u8, u8, u8, u16, s32);
 static void sub_80A0958(struct Pokemon *);
 static void PokemonSummaryScreen_PrintTrainerMemo(struct Pokemon *, u8, u8);
@@ -146,9 +146,6 @@ extern const u8 * const gAbilityDescriptions[];
 extern const u8 * const gContestEffectStrings[];
 extern const struct ContestMove gContestMoves[];
 extern const struct ContestEffect gContestEffects[];
-extern const u16 gUnknown_08E94510[];
-extern const u16 gUnknown_08E94550[];
-extern const u16 gUnknown_08E94590[];
 extern const u8 gUnknown_08E73E88[];
 
 EWRAM_DATA u8 gUnknown_020384F0 = 0;
@@ -1350,7 +1347,6 @@ static void sub_809EBC4(void)
 
 void sub_809EC38(u8 taskId)
 {
-    u8 minus2;
     s16 *taskData = gTasks[taskId].data;
 
     switch (taskData[0])
@@ -1384,9 +1380,8 @@ void sub_809EC38(u8 taskId)
     case 1:
         if (pssData.bgToggle == 0)
         {
-            int var2 = gBattle_BG1_X - 0x20;
-            gBattle_BG1_X = var2;
-            if (var2 << 16 == 0)
+            gBattle_BG1_X -= 0x20;
+            if (gBattle_BG1_X == 0)
             {
                 REG_BG1CNT = (REG_BG1CNT & 0xFFFC) + 2;
                 REG_BG2CNT = (REG_BG2CNT & 0xFFFC) + 1;
@@ -1395,9 +1390,8 @@ void sub_809EC38(u8 taskId)
         }
         else
         {
-            int var2 = gBattle_BG2_X - 0x20;
-            gBattle_BG2_X = var2;
-            if (var2 << 16 == 0)
+            gBattle_BG2_X -= 0x20;
+            if (gBattle_BG2_X == 0)
             {
                 REG_BG1CNT = (REG_BG1CNT & 0xFFFC) + 1;
                 REG_BG2CNT = (REG_BG2CNT & 0xFFFC) + 2;
@@ -1407,8 +1401,7 @@ void sub_809EC38(u8 taskId)
         break;
     case 2:
         pssData.headerTextId = pssData.page + 1;
-        minus2 = pssData.mode - 2;
-        if (minus2 < 2)
+        if (pssData.mode == 2 || pssData.mode == 3)
         {
             pssData.headerActionTextId = 0;
             sub_80A029C(&pssData.loadedMon);
@@ -1702,7 +1695,7 @@ s8 sub_809F3CC(s8 direction)
         return -1;
     if (direction != 1)
         return sub_809F388(monIndex);
-    else if (monIndex != 5)
+    if (monIndex != 5)
         return sub_809F344(monIndex);
 
     return -1;
@@ -2680,38 +2673,27 @@ static void sub_80A0958(struct Pokemon *mon)
 
 static void sub_80A0A2C(struct Pokemon *mon, u8 left, u8 top)
 {
-    const u8 *genderSymbol;
-    u8 color;
-    u8 bottom;
     u16 species = GetMonData(mon, MON_DATA_SPECIES2);
 
-    if (species != SPECIES_NIDORAN_M && species != SPECIES_NIDORAN_F)
+    if (species == SPECIES_NIDORAN_M || species == SPECIES_NIDORAN_F)
+        return;
+    switch (GetMonGender(mon))
     {
-        u8 gender = GetMonGender(mon);
-        switch (gender)
-        {
-        default:
-            bottom = top + 1;
-            Menu_EraseWindowRect(left, top, left, bottom);
-            return;
-        case MON_MALE:
-            genderSymbol = gOtherText_MaleSymbol2;
-            color = 11;
-            break;
-        case MON_FEMALE:
-            genderSymbol = gOtherText_FemaleSymbol2;
-            color = 12;
-            break;
-        }
-
-        SummaryScreen_PrintColoredText(genderSymbol, color, left, top);
+    case MON_MALE:
+        SummaryScreen_PrintColoredText(gOtherText_MaleSymbol2, 11, left, top);
+        break;
+    case MON_FEMALE:
+        SummaryScreen_PrintColoredText(gOtherText_FemaleSymbol2, 12, left, top);
+        break;
+    default:
+        Menu_EraseWindowRect(left, top, left, top + 1);
     }
 }
 
 u8 GetNumRibbons(struct Pokemon *mon)
 {
-    u8 numRibbons = 0;
-    numRibbons += GetMonData(mon, MON_DATA_COOL_RIBBON);
+    u8 numRibbons;
+    numRibbons = GetMonData(mon, MON_DATA_COOL_RIBBON);
     numRibbons += GetMonData(mon, MON_DATA_BEAUTY_RIBBON);
     numRibbons += GetMonData(mon, MON_DATA_CUTE_RIBBON);
     numRibbons += GetMonData(mon, MON_DATA_SMART_RIBBON);
@@ -2967,39 +2949,20 @@ void DrawSummaryScreenNavigationDots(void)
     DmaCopy16Defvars(3, arr, (void *)(VRAM + 0xE056), 16);
 }
 
-// Like DmaCopyLarge16 but the size check is up top
-#define DmaCopyLargeCheckFirst16(_src,_dest,_size) { \
-    const void * src = (const void *)(_src);         \
-    void * dest = (void *)(_dest);                   \
-    u32 size = (u32)(_size);                         \
-    while (1)                                        \
-    {                                                \
-        if (size <= 0x1000)                          \
-        {                                            \
-            DmaCopy16(3, src, dest, size);           \
-            break;                                   \
-        }                                            \
-        DmaCopy16(3, src, dest, 0x1000);             \
-        src += 0x1000;                               \
-        dest += 0x1000;                              \
-        size -= 0x1000;                              \
-    }                                                \
-}
-
 void sub_80A1D18(void);
 
 void sub_80A1048(u8 taskId)
 {
-    s16 * data = gTasks[taskId].data;
     u8 i;
+    s16 * data = gTasks[taskId].data;
 
     data[1] += data[0];
     if (data[1] != 0)
     {
-        DmaCopyLargeCheckFirst16(&gUnknown_08E73508[0x24A - data[1]], (void *)(BG_SCREEN_ADDR(28) + 0x480), data[1] * 2);
-        DmaCopyLargeCheckFirst16(&gUnknown_08E73508[0x26A - data[1]], (void *)(BG_SCREEN_ADDR(28) + 0x4C0), data[1] * 2);
-        DmaCopyLargeCheckFirst16(&gUnknown_08E73508[0x24A - data[1]], (void *)(BG_SCREEN_ADDR(29) + 0x480), data[1] * 2);
-        DmaCopyLargeCheckFirst16(&gUnknown_08E73508[0x26A - data[1]], (void *)(BG_SCREEN_ADDR(29) + 0x4C0), data[1] * 2);
+        Dma3CopyLarge_(&gUnknown_08E73508[0x24A - data[1]], (void *)(BG_SCREEN_ADDR(28) + 0x480), data[1] * 2, 16);
+        Dma3CopyLarge_(&gUnknown_08E73508[0x26A - data[1]], (void *)(BG_SCREEN_ADDR(28) + 0x4C0), data[1] * 2, 16);
+        Dma3CopyLarge_(&gUnknown_08E73508[0x24A - data[1]], (void *)(BG_SCREEN_ADDR(29) + 0x480), data[1] * 2, 16);
+        Dma3CopyLarge_(&gUnknown_08E73508[0x26A - data[1]], (void *)(BG_SCREEN_ADDR(29) + 0x4C0), data[1] * 2, 16);
     }
     for (i = data[1]; i < 10; i++)
     {
@@ -3025,254 +2988,86 @@ static void sub_80A12D0(s8 a)
     sub_80A18E4(29);
 
     newTaskId = CreateTask(sub_80A1048, 0);
-    gTasks[newTaskId].data[0] = a;
+    gTasks[newTaskId].data[0] = (s16)a;
 
-    if (a < 0)
-        gTasks[newTaskId].data[1] = 10;
-    else
-        gTasks[newTaskId].data[1] = 0;
+    if (a < 0) gTasks[newTaskId].data[1] = 10;
+    else gTasks[newTaskId].data[1] = 0;
 
     gTasks[newTaskId].data[2] = 1;
 }
 
-// void sub_80A1334(u8 taskId)
-// {
-//     u8 i;
-//     s16 var1;
-
-//     gTasks[taskId].data[1] += gTasks[taskId].data[0];
-
-//     var1 = 0;
-//     if (gTasks[taskId].data[1] >= 0)
-//     {
-//         var1 = 10;
-//         if (gTasks[taskId].data[1] < 10)
-//         {
-//             var1 = gTasks[taskId].data[1];
-//         }
-//     }
-
-//     if (var1 > 0)
-//     {
-//         u8 *vramAddr = (u8 *)(VRAM + 0x5B40);
-//         for (i = 0; i < 7; i++)
-//         {
-//             CpuSet(&gUnknown_08E73E88[(i + 13) * 64], vramAddr, var1 & 0x1FFFFF);
-//             vramAddr += 64;
-//         }
-//     }
-
-//     if (var1 <= 9)
-//     {
-//         u8 *vramAddr = (u8 *)(VRAM + 0x5B40);
-//         for (i = 0; i < 64; i++)
-//         {
-//             u16 val = gTasks[taskId].data[2];
-//             CpuSet(&val, vramAddr, ((10 - var1) & 0x1FFFFF) | 0x800000);
-//         }
-//     }
-//     else
-//     {
-//         Menu_EraseWindowRect(0, 19, 9, 19);
-//     }
-
-//     if (gTasks[taskId].data[0] == 0 || gTasks[taskId].data[1] < 0)
-//     {
-//         if (pssData.page == PSS_PAGE_BATTLE_MOVES)
-//         {
-//             Menu_EraseWindowRect(0, 14, 9, 18);
-//             sub_80A0958(pssData.loadedMon);
-
-//             if (GetMonStatusAndPokerus(pssData.loadedMon))
-//             {
-//                 SummaryScreen_PrintColoredText(gOtherText_Status, 13, 1, 18);
-//             }
-
-//             DestroyTask(taskId);
-//         }
-//     }
-
-//     if (gTasks[taskId].data[1] > 9)
-//     {
-//         if (pssData.page == PSS_PAGE_BATTLE_MOVES)
-//         {
-//             sub_80A00F4(gTasks[taskId].data[3]);
-//         }
-
-//         sub_80A0428(pssData.loadedMon, &gTasks[taskId].data[3]);
-//         DestroyTask(taskId);
-//     }
-// }
-NAKED
-static void sub_80A1334(u8 taskId)
+void sub_80A1334(u8 taskId)
 {
-    asm(".syntax unified\n\
-    push {r4-r7,lr}\n\
-    mov r7, r10\n\
-    mov r6, r9\n\
-    mov r5, r8\n\
-    push {r5-r7}\n\
-    sub sp, 0x4\n\
-    lsls r0, 24\n\
-    lsrs r0, 24\n\
-    mov r10, r0\n\
-    lsls r0, 2\n\
-    add r0, r10\n\
-    lsls r0, 3\n\
-    ldr r1, _080A13E4 @ =gTasks + 0x8\n\
-    adds r7, r0, r1\n\
-    ldrh r0, [r7]\n\
-    ldrh r1, [r7, 0x2]\n\
-    adds r0, r1\n\
-    strh r0, [r7, 0x2]\n\
-    lsls r0, 16\n\
-    asrs r1, r0, 16\n\
-    movs r0, 0\n\
-    cmp r1, 0\n\
-    blt _080A136A\n\
-    movs r0, 0xA\n\
-    cmp r1, 0xA\n\
-    bgt _080A136A\n\
-    ldrh r0, [r7, 0x2]\n\
-_080A136A:\n\
-    lsls r0, 16\n\
-    asrs r2, r0, 16\n\
-    mov r9, r0\n\
-    cmp r2, 0\n\
-    ble _080A13A6\n\
-    movs r0, 0xA\n\
-    subs r0, r2\n\
-    lsls r0, 1\n\
-    ldr r1, _080A13E8 @ =0x06005b40\n\
-    adds r4, r0, r1\n\
-    movs r5, 0\n\
-    adds r6, r2, 0\n\
-    ldr r0, _080A13EC @ =0x001fffff\n\
-    mov r8, r0\n\
-_080A1386:\n\
-    adds r0, r5, 0\n\
-    adds r0, 0xD\n\
-    lsls r0, 6\n\
-    ldr r1, _080A13F0 @ =gUnknown_08E73E88\n\
-    adds r0, r1\n\
-    adds r1, r4, 0\n\
-    mov r2, r8\n\
-    ands r2, r6\n\
-    bl CpuSet\n\
-    adds r4, 0x40\n\
-    adds r0, r5, 0x1\n\
-    lsls r0, 24\n\
-    lsrs r5, r0, 24\n\
-    cmp r5, 0x6\n\
-    bls _080A1386\n\
-_080A13A6:\n\
-    mov r1, r9\n\
-    asrs r2, r1, 16\n\
-    cmp r2, 0x9\n\
-    bgt _080A13F4\n\
-    ldr r4, _080A13E8 @ =0x06005b40\n\
-    movs r5, 0\n\
-    mov r8, sp\n\
-    movs r0, 0xA\n\
-    subs r6, r0, r2\n\
-    ldr r0, _080A13EC @ =0x001fffff\n\
-    ands r6, r0\n\
-    movs r0, 0x80\n\
-    lsls r0, 17\n\
-    mov r9, r0\n\
-_080A13C2:\n\
-    ldrh r0, [r7, 0x4]\n\
-    mov r1, r8\n\
-    strh r0, [r1]\n\
-    mov r0, sp\n\
-    adds r1, r4, 0\n\
-    mov r2, r9\n\
-    orrs r2, r6\n\
-    bl CpuSet\n\
-    adds r4, 0x40\n\
-    adds r0, r5, 0x1\n\
-    lsls r0, 24\n\
-    lsrs r5, r0, 24\n\
-    cmp r5, 0x6\n\
-    bls _080A13C2\n\
-    b _080A1400\n\
-    .align 2, 0\n\
-_080A13E4: .4byte gTasks + 0x8\n\
-_080A13E8: .4byte 0x06005b40\n\
-_080A13EC: .4byte 0x001fffff\n\
-_080A13F0: .4byte gUnknown_08E73E88\n\
-_080A13F4:\n\
-    movs r0, 0\n\
-    movs r1, 0x13\n\
-    movs r2, 0x9\n\
-    movs r3, 0x13\n\
-    bl Menu_EraseWindowRect\n\
-_080A1400:\n\
-    movs r1, 0\n\
-    ldrsh r0, [r7, r1]\n\
-    cmp r0, 0\n\
-    beq _080A1410\n\
-    movs r1, 0x2\n\
-    ldrsh r0, [r7, r1]\n\
-    cmp r0, 0\n\
-    bge _080A144A\n\
-_080A1410:\n\
-    ldr r4, _080A1480 @ =gSharedMem + 0x18000\n\
-    ldrb r0, [r4, 0xB]\n\
-    cmp r0, 0x2\n\
-    bne _080A1444\n\
-    movs r0, 0\n\
-    movs r1, 0xE\n\
-    movs r2, 0x9\n\
-    movs r3, 0x12\n\
-    bl Menu_EraseWindowRect\n\
-    adds r4, 0x10\n\
-    adds r0, r4, 0\n\
-    bl sub_80A0958\n\
-    adds r0, r4, 0\n\
-    bl GetMonStatusAndPokerus\n\
-    lsls r0, 24\n\
-    cmp r0, 0\n\
-    beq _080A1444\n\
-    ldr r0, _080A1484 @ =gOtherText_Status\n\
-    movs r1, 0xD\n\
-    movs r2, 0x1\n\
-    movs r3, 0x12\n\
-    bl SummaryScreen_PrintColoredText\n\
-_080A1444:\n\
-    mov r0, r10\n\
-    bl DestroyTask\n\
-_080A144A:\n\
-    movs r1, 0x2\n\
-    ldrsh r0, [r7, r1]\n\
-    cmp r0, 0x9\n\
-    ble _080A1470\n\
-    ldr r4, _080A1480 @ =gSharedMem + 0x18000\n\
-    ldrb r0, [r4, 0xB]\n\
-    cmp r0, 0x2\n\
-    bne _080A1460\n\
-    ldrb r0, [r7, 0x6]\n\
-    bl sub_80A00F4\n\
-_080A1460:\n\
-    adds r0, r4, 0\n\
-    adds r0, 0x10\n\
-    adds r1, r7, 0x6\n\
-    bl sub_80A0428\n\
-    mov r0, r10\n\
-    bl DestroyTask\n\
-_080A1470:\n\
-    add sp, 0x4\n\
-    pop {r3-r5}\n\
-    mov r8, r3\n\
-    mov r9, r4\n\
-    mov r10, r5\n\
-    pop {r4-r7}\n\
-    pop {r0}\n\
-    bx r0\n\
-    .align 2, 0\n\
-_080A1480: .4byte gSharedMem + 0x18000\n\
-_080A1484: .4byte gOtherText_Status\n\
-    .syntax divided\n");
+    u8 i;
+    s16 var1;
+    u16* vramAddr;
+    s16 * taskData = gTasks[taskId].data;
+
+    taskData[1] += taskData[0];
+    
+    if (taskData[1] < 0)
+    {
+        var1 = 0;
+    }
+    else if (taskData[1] > 10)
+    {
+        var1 = 10; 
+    }
+    else
+    {
+        var1 = taskData[1];
+    }
+
+    if (var1 > 0)
+    {
+        vramAddr = (u16 *)(VRAM + 0x5B40 + ((10 - var1) << 1));
+        for (i = 0; i < 7; i++)
+        {
+            CpuSet(&gUnknown_08E73E88[(i + 13) * 64], vramAddr, var1 & 0x1fffff);
+            vramAddr += 32;
+        }
+    }
+
+    if (var1 < 10)
+    {
+        vramAddr = (u16 *)(VRAM + 0x5B40);
+        for (i = 0; i < 7; i++)
+        {
+            vu16 val = taskData[2];
+            CpuSet((u8*)&val, vramAddr, ((10 - var1) & 0x1fffff) | 0x1000000);
+            vramAddr += 32;
+        }
+    }
+    else
+    {
+        Menu_EraseWindowRect(0, 19, 9, 19);
+    }
+
+    if (taskData[0] == 0 || taskData[1] < 0)
+    {
+        if (pssData.page == PSS_PAGE_BATTLE_MOVES)
+        {
+            Menu_EraseWindowRect(0, 14, 9, 18);
+            sub_80A0958(&(pssData.loadedMon));
+
+            if (GetMonStatusAndPokerus(&(pssData.loadedMon)))
+            {
+                SummaryScreen_PrintColoredText(gOtherText_Status, 13, 1, 18);
+            }
+        }
+        DestroyTask(taskId);
+    }
+
+    if (taskData[1] >= 10)
+    {
+        if (pssData.page == PSS_PAGE_BATTLE_MOVES)
+        {
+            sub_80A00F4(taskData[3]);
+        }
+
+        sub_80A0428(&(pssData.loadedMon), (u8*)&taskData[3]);
+        DestroyTask(taskId);
+    }
 }
 
 // Related to re-drawing the summary area underneath the pokemon's picture
@@ -3288,187 +3083,87 @@ static void sub_80A1488(s8 a, u8 b)
     if (taskId == 0xFF)
         taskId = CreateTask(sub_80A1334, 0);
 
-    gTasks[taskId].data[0] = a;
+    gTasks[taskId].data[0] = (s16)a;
 
-    if (a < 0)
-        gTasks[taskId].data[1] = 10;
-    else
-        gTasks[taskId].data[1] = 0;
+    if (a < 0) gTasks[taskId].data[1] = 10;
+    else gTasks[taskId].data[1] = 0;
 
     gTasks[taskId].data[2] = 0;
-    gTasks[taskId].data[3] = b;
+    gTasks[taskId].data[3] = (s16)b;
 }
 
-NAKED
 static void sub_80A1500(u8 taskId)
 {
-    asm(".syntax unified\n\
-    push {r4-r7,lr}\n\
-    mov r7, r10\n\
-    mov r6, r9\n\
-    mov r5, r8\n\
-    push {r5-r7}\n\
-    sub sp, 0x4\n\
-    lsls r0, 24\n\
-    lsrs r0, 24\n\
-    mov r10, r0\n\
-    lsls r0, 2\n\
-    add r0, r10\n\
-    lsls r0, 3\n\
-    ldr r1, _080A15B0 @ =gTasks + 0x8\n\
-    adds r7, r0, r1\n\
-    ldrh r0, [r7]\n\
-    ldrh r1, [r7, 0x2]\n\
-    adds r0, r1\n\
-    strh r0, [r7, 0x2]\n\
-    lsls r0, 16\n\
-    asrs r1, r0, 16\n\
-    movs r0, 0\n\
-    cmp r1, 0\n\
-    blt _080A1536\n\
-    movs r0, 0xA\n\
-    cmp r1, 0xA\n\
-    bgt _080A1536\n\
-    ldrh r0, [r7, 0x2]\n\
-_080A1536:\n\
-    lsls r0, 16\n\
-    asrs r2, r0, 16\n\
-    mov r9, r0\n\
-    cmp r2, 0\n\
-    ble _080A1572\n\
-    movs r0, 0xA\n\
-    subs r0, r2\n\
-    lsls r0, 1\n\
-    ldr r1, _080A15B4 @ =0x06006b40\n\
-    adds r4, r0, r1\n\
-    movs r5, 0\n\
-    adds r6, r2, 0\n\
-    ldr r0, _080A15B8 @ =0x001fffff\n\
-    mov r8, r0\n\
-_080A1552:\n\
-    adds r0, r5, 0\n\
-    adds r0, 0xD\n\
-    lsls r0, 6\n\
-    ldr r1, _080A15BC @ =gUnknown_08E74688\n\
-    adds r0, r1\n\
-    adds r1, r4, 0\n\
-    mov r2, r8\n\
-    ands r2, r6\n\
-    bl CpuSet\n\
-    adds r4, 0x40\n\
-    adds r0, r5, 0x1\n\
-    lsls r0, 24\n\
-    lsrs r5, r0, 24\n\
-    cmp r5, 0x6\n\
-    bls _080A1552\n\
-_080A1572:\n\
-    mov r1, r9\n\
-    asrs r2, r1, 16\n\
-    cmp r2, 0x9\n\
-    bgt _080A15C0\n\
-    ldr r4, _080A15B4 @ =0x06006b40\n\
-    movs r5, 0\n\
-    mov r8, sp\n\
-    movs r0, 0xA\n\
-    subs r6, r0, r2\n\
-    ldr r0, _080A15B8 @ =0x001fffff\n\
-    ands r6, r0\n\
-    movs r0, 0x80\n\
-    lsls r0, 17\n\
-    mov r9, r0\n\
-_080A158E:\n\
-    ldrh r0, [r7, 0x4]\n\
-    mov r1, r8\n\
-    strh r0, [r1]\n\
-    mov r0, sp\n\
-    adds r1, r4, 0\n\
-    mov r2, r9\n\
-    orrs r2, r6\n\
-    bl CpuSet\n\
-    adds r4, 0x40\n\
-    adds r0, r5, 0x1\n\
-    lsls r0, 24\n\
-    lsrs r5, r0, 24\n\
-    cmp r5, 0x6\n\
-    bls _080A158E\n\
-    b _080A15CC\n\
-    .align 2, 0\n\
-_080A15B0: .4byte gTasks + 0x8\n\
-_080A15B4: .4byte 0x06006b40\n\
-_080A15B8: .4byte 0x001fffff\n\
-_080A15BC: .4byte gUnknown_08E74688\n\
-_080A15C0:\n\
-    movs r0, 0\n\
-    movs r1, 0x13\n\
-    movs r2, 0x9\n\
-    movs r3, 0x13\n\
-    bl Menu_EraseWindowRect\n\
-_080A15CC:\n\
-    movs r1, 0\n\
-    ldrsh r0, [r7, r1]\n\
-    cmp r0, 0\n\
-    beq _080A15DC\n\
-    movs r1, 0x2\n\
-    ldrsh r0, [r7, r1]\n\
-    cmp r0, 0\n\
-    bge _080A1616\n\
-_080A15DC:\n\
-    ldr r4, _080A164C @ =gSharedMem + 0x18000\n\
-    ldrb r0, [r4, 0xB]\n\
-    cmp r0, 0x3\n\
-    bne _080A1610\n\
-    movs r0, 0\n\
-    movs r1, 0xE\n\
-    movs r2, 0x9\n\
-    movs r3, 0x12\n\
-    bl Menu_EraseWindowRect\n\
-    adds r4, 0x10\n\
-    adds r0, r4, 0\n\
-    bl sub_80A0958\n\
-    adds r0, r4, 0\n\
-    bl GetMonStatusAndPokerus\n\
-    lsls r0, 24\n\
-    cmp r0, 0\n\
-    beq _080A1610\n\
-    ldr r0, _080A1650 @ =gOtherText_Status\n\
-    movs r1, 0xD\n\
-    movs r2, 0x1\n\
-    movs r3, 0x12\n\
-    bl SummaryScreen_PrintColoredText\n\
-_080A1610:\n\
-    mov r0, r10\n\
-    bl DestroyTask\n\
-_080A1616:\n\
-    movs r1, 0x2\n\
-    ldrsh r0, [r7, r1]\n\
-    cmp r0, 0x9\n\
-    ble _080A163C\n\
-    ldr r4, _080A164C @ =gSharedMem + 0x18000\n\
-    ldrb r0, [r4, 0xB]\n\
-    cmp r0, 0x3\n\
-    bne _080A162C\n\
-    ldrb r0, [r7, 0x6]\n\
-    bl sub_80A00F4\n\
-_080A162C:\n\
-    adds r0, r4, 0\n\
-    adds r0, 0x10\n\
-    adds r1, r7, 0x6\n\
-    bl sub_80A0428\n\
-    mov r0, r10\n\
-    bl DestroyTask\n\
-_080A163C:\n\
-    add sp, 0x4\n\
-    pop {r3-r5}\n\
-    mov r8, r3\n\
-    mov r9, r4\n\
-    mov r10, r5\n\
-    pop {r4-r7}\n\
-    pop {r0}\n\
-    bx r0\n\
-    .align 2, 0\n\
-_080A164C: .4byte gSharedMem + 0x18000\n\
-_080A1650: .4byte gOtherText_Status\n\
-    .syntax divided\n");
+    u8 i;
+    s16 var1;
+    u16* vramAddr;
+    s16 * taskData = gTasks[taskId].data;
+
+    taskData[1] += taskData[0];
+    
+    if (taskData[1] < 0)
+    {
+        var1 = 0;
+    }
+    else if (taskData[1] > 10)
+    {
+        var1 = 10; 
+    }
+    else
+    {
+        var1 = taskData[1];
+    }
+
+    if (var1 > 0)
+    {
+        vramAddr = (u16 *)(VRAM + 0x6B40 + ((10 - var1) << 1));
+        for (i = 0; i < 7; i++)
+        {
+            CpuSet(&gUnknown_08E74688[(i + 13) * 64], vramAddr, var1 & 0x1fffff);
+            vramAddr += 32;
+        }
+    }
+
+    if (var1 < 10)
+    {
+        vramAddr = (u16 *)(VRAM + 0x6B40);
+        for (i = 0; i < 7; i++)
+        {
+            vu16 val = taskData[2];
+            CpuSet((u8*)&val, vramAddr, ((10 - var1) & 0x1fffff) | 0x1000000);
+            vramAddr += 32;
+        }
+    }
+    else
+    {
+        Menu_EraseWindowRect(0, 19, 9, 19);
+    }
+
+    if (taskData[0] == 0 || taskData[1] < 0)
+    {
+        if (pssData.page == PSS_PAGE_CONTEST_MOVES)
+        {
+            Menu_EraseWindowRect(0, 14, 9, 18);
+            sub_80A0958(&(pssData.loadedMon));
+
+            if (GetMonStatusAndPokerus(&(pssData.loadedMon)))
+            {
+                SummaryScreen_PrintColoredText(gOtherText_Status, 13, 1, 18);
+            }
+        }
+        DestroyTask(taskId);
+    }
+
+    if (taskData[1] >= 10)
+    {
+        if (pssData.page == PSS_PAGE_CONTEST_MOVES)
+        {
+            sub_80A00F4(taskData[3]);
+        }
+
+        sub_80A0428(&(pssData.loadedMon), (u8*)&taskData[3]);
+        DestroyTask(taskId);
+    }
 }
 
 static void sub_80A1654(s8 a, u8 b)
@@ -3482,240 +3177,69 @@ static void sub_80A1654(s8 a, u8 b)
     if (taskId == 0xFF)
         taskId = CreateTask(sub_80A1500, 0);
 
-    gTasks[taskId].data[0] = a;
+    gTasks[taskId].data[0] = (s16)a;
 
-    if (a < 0)
-        gTasks[taskId].data[1] = 10;
-    else
-        gTasks[taskId].data[1] = 0;
+    if (a < 0) gTasks[taskId].data[1] = 10;
+    else gTasks[taskId].data[1] = 0;
 
     gTasks[taskId].data[2] = 0;
-    gTasks[taskId].data[3] = b;
+    gTasks[taskId].data[3] = (s16)b;
 }
 
-// not enough registers allocated (need to allocate r8 and r9)
-#ifdef NONMATCHING
+extern u16 gUnknown_08E94510[3][32];
+
 static void sub_80A16CC(u8 a)
 {
     u8 i;
-    u16 *vramAddr = (u16 *)(VRAM + 0x6AD4);
+    u16 (*vramAddr)[0x20];
+    
+    vramAddr = BG_SCREEN_ADDR(13) + ( 0xb << 6 ) + ( 0xa << 1 );
 
     if (a == 0)
     {
         for (i = 0; i < 20; i++)
         {
-            vramAddr[i] = gUnknown_08E94510[i] + 0x1000;
-            vramAddr[i + 0x20] = gUnknown_08E94510[i] + 0x1000;
-            vramAddr[i + 0x40] = gUnknown_08E94550[i] + 0x1000;
-        }
-    }
-    else
-    {
-        i = 0;
-        for (i = 0; i < 20; i++)
-        {
-            vramAddr[i] = gUnknown_08E94550[i] + 0x1000;
-            vramAddr[i + 0x20] = gUnknown_08E94590[i] + 0x1000;
-            vramAddr[i + 0x40] = gUnknown_08E94590[i] + 0x1000;
-        }
-    }
-
-    vramAddr = (u16 *)(VRAM + 0x5AD4);
-
-    if (a == 0)
-    {
-        for (i = 0; i < 20; i++)
-        {
-            vramAddr[i] = gUnknown_08E94510[i] + 0x3000;
-            vramAddr[i + 0x20] = gUnknown_08E94510[i] + 0x3000;
-            vramAddr[i + 0x40] = gUnknown_08E94550[i] + 0x3000;
+            vramAddr[0][i] = 0x1000 + gUnknown_08E94510[0][i];
+            vramAddr[1][i] = 0x1000 + gUnknown_08E94510[0][i];
+            vramAddr[2][i] = 0x1000 + gUnknown_08E94510[1][i];
         }
     }
     else
     {
         for (i = 0; i < 20; i++)
         {
-            vramAddr[i] = gUnknown_08E94550[i] + 0x3000;
-            vramAddr[i + 0x20] = gUnknown_08E94590[i] + 0x3000;
-            vramAddr[i + 0x40] = gUnknown_08E94590[i] + 0x3000;
+            vramAddr[0][i] = 0x1000 + (gUnknown_08E94510+1)[0][i];
+            vramAddr[1][i] = 0x1000 + (gUnknown_08E94510+1)[1][i];
+            vramAddr[2][i] = 0x1000 + (gUnknown_08E94510+1)[1][i];
+        }
+    }
+
+    vramAddr = BG_SCREEN_ADDR(11) + ( 0xb << 6 ) + ( 0xa << 1 );
+
+    if (a == 0)
+    {
+        for (i = 0; i < 20; i++)
+        {
+            vramAddr[0][i] = 0x3000 + gUnknown_08E94510[0][i];
+            vramAddr[1][i] = 0x3000 + gUnknown_08E94510[0][i];
+            vramAddr[2][i] = 0x3000 + gUnknown_08E94510[1][i];
+        }
+    }
+    else
+    {
+        for (i = 0; i < 20; i++)
+        {
+            vramAddr[0][i] = 0x3000 + (gUnknown_08E94510+1)[0][i];
+            vramAddr[1][i] = 0x3000 + (gUnknown_08E94510+1)[1][i];
+            vramAddr[2][i] = 0x3000 + (gUnknown_08E94510+1)[1][i];
         }
     }
 }
-#else
-NAKED
-static void sub_80A16CC(u8 a)
-{
-    asm(".syntax unified\n\
-    push {r4-r7,lr}\n\
-    mov r7, r9\n\
-    mov r6, r8\n\
-    push {r6,r7}\n\
-    lsls r0, 24\n\
-    lsrs r0, 24\n\
-    mov r9, r0\n\
-    ldr r0, _080A1724 @ =0x06006ad4\n\
-    mov r12, r0\n\
-    mov r1, r9\n\
-    cmp r1, 0\n\
-    bne _080A172C\n\
-    movs r5, 0\n\
-    ldr r7, _080A1728 @ =gUnknown_08E94510\n\
-    movs r0, 0x80\n\
-    lsls r0, 5\n\
-    adds r6, r0, 0\n\
-    movs r1, 0x40\n\
-    adds r1, r7\n\
-    mov r8, r1\n\
-_080A16F4:\n\
-    lsls r2, r5, 1\n\
-    mov r0, r12\n\
-    adds r3, r2, r0\n\
-    adds r4, r2, r7\n\
-    ldrh r1, [r4]\n\
-    adds r0, r6, r1\n\
-    strh r0, [r3]\n\
-    adds r1, r3, 0\n\
-    adds r1, 0x40\n\
-    ldrh r4, [r4]\n\
-    adds r0, r6, r4\n\
-    strh r0, [r1]\n\
-    adds r3, 0x80\n\
-    add r2, r8\n\
-    ldrh r2, [r2]\n\
-    adds r0, r6, r2\n\
-    strh r0, [r3]\n\
-    adds r0, r5, 0x1\n\
-    lsls r0, 24\n\
-    lsrs r5, r0, 24\n\
-    cmp r5, 0x13\n\
-    bls _080A16F4\n\
-    b _080A1768\n\
-    .align 2, 0\n\
-_080A1724: .4byte 0x06006ad4\n\
-_080A1728: .4byte gUnknown_08E94510\n\
-_080A172C:\n\
-    movs r5, 0\n\
-    ldr r6, _080A17B0 @ =gUnknown_08E94550\n\
-    movs r7, 0x80\n\
-    lsls r7, 5\n\
-    adds r4, r7, 0\n\
-    movs r0, 0x40\n\
-    adds r0, r6\n\
-    mov r8, r0\n\
-_080A173C:\n\
-    lsls r1, r5, 1\n\
-    mov r7, r12\n\
-    adds r2, r1, r7\n\
-    adds r0, r1, r6\n\
-    ldrh r0, [r0]\n\
-    adds r0, r4, r0\n\
-    strh r0, [r2]\n\
-    adds r3, r2, 0\n\
-    adds r3, 0x40\n\
-    add r1, r8\n\
-    ldrh r7, [r1]\n\
-    adds r0, r4, r7\n\
-    strh r0, [r3]\n\
-    adds r2, 0x80\n\
-    ldrh r1, [r1]\n\
-    adds r0, r4, r1\n\
-    strh r0, [r2]\n\
-    adds r0, r5, 0x1\n\
-    lsls r0, 24\n\
-    lsrs r5, r0, 24\n\
-    cmp r5, 0x13\n\
-    bls _080A173C\n\
-_080A1768:\n\
-    ldr r0, _080A17B4 @ =0x06005ad4\n\
-    mov r12, r0\n\
-    mov r1, r9\n\
-    cmp r1, 0\n\
-    bne _080A17BC\n\
-    movs r5, 0\n\
-    ldr r7, _080A17B8 @ =gUnknown_08E94510\n\
-    movs r0, 0xC0\n\
-    lsls r0, 6\n\
-    adds r6, r0, 0\n\
-    movs r1, 0x40\n\
-    adds r1, r7\n\
-    mov r8, r1\n\
-_080A1782:\n\
-    lsls r2, r5, 1\n\
-    mov r0, r12\n\
-    adds r3, r2, r0\n\
-    adds r4, r2, r7\n\
-    ldrh r1, [r4]\n\
-    adds r0, r6, r1\n\
-    strh r0, [r3]\n\
-    adds r1, r3, 0\n\
-    adds r1, 0x40\n\
-    ldrh r4, [r4]\n\
-    adds r0, r6, r4\n\
-    strh r0, [r1]\n\
-    adds r3, 0x80\n\
-    add r2, r8\n\
-    ldrh r2, [r2]\n\
-    adds r0, r6, r2\n\
-    strh r0, [r3]\n\
-    adds r0, r5, 0x1\n\
-    lsls r0, 24\n\
-    lsrs r5, r0, 24\n\
-    cmp r5, 0x13\n\
-    bls _080A1782\n\
-    b _080A17F8\n\
-    .align 2, 0\n\
-_080A17B0: .4byte gUnknown_08E94550\n\
-_080A17B4: .4byte 0x06005ad4\n\
-_080A17B8: .4byte gUnknown_08E94510\n\
-_080A17BC:\n\
-    movs r5, 0\n\
-    ldr r6, _080A1804 @ =gUnknown_08E94550\n\
-    movs r7, 0xC0\n\
-    lsls r7, 6\n\
-    adds r4, r7, 0\n\
-    movs r0, 0x40\n\
-    adds r0, r6\n\
-    mov r8, r0\n\
-_080A17CC:\n\
-    lsls r1, r5, 1\n\
-    mov r7, r12\n\
-    adds r2, r1, r7\n\
-    adds r0, r1, r6\n\
-    ldrh r0, [r0]\n\
-    adds r0, r4, r0\n\
-    strh r0, [r2]\n\
-    adds r3, r2, 0\n\
-    adds r3, 0x40\n\
-    add r1, r8\n\
-    ldrh r7, [r1]\n\
-    adds r0, r4, r7\n\
-    strh r0, [r3]\n\
-    adds r2, 0x80\n\
-    ldrh r1, [r1]\n\
-    adds r0, r4, r1\n\
-    strh r0, [r2]\n\
-    adds r0, r5, 0x1\n\
-    lsls r0, 24\n\
-    lsrs r5, r0, 24\n\
-    cmp r5, 0x13\n\
-    bls _080A17CC\n\
-_080A17F8:\n\
-    pop {r3,r4}\n\
-    mov r8, r3\n\
-    mov r9, r4\n\
-    pop {r4-r7}\n\
-    pop {r0}\n\
-    bx r0\n\
-    .align 2, 0\n\
-_080A1804: .4byte gUnknown_08E94550\n\
-    .syntax divided\n");
-}
-#endif // NONMATCHING
 
 u8 SummaryScreen_CreatePokemonSprite(struct Pokemon *mon)
 {
-    u16 species;
     u8 spriteId;
+    u16 species;
 
     species = GetMonData(mon, MON_DATA_SPECIES2);
     spriteId = CreateSprite(&gCreatingSpriteTemplate, 40, 64, 5);
@@ -3725,10 +3249,8 @@ u8 SummaryScreen_CreatePokemonSprite(struct Pokemon *mon)
     gSprites[spriteId].data[0] = species;
     gSprites[spriteId].callback = SummaryScreen_SpritePlayCry;
 
-    if (!IsPokeSpriteNotFlipped(species))
-        gSprites[spriteId].hFlip = TRUE;
-    else
-        gSprites[spriteId].hFlip = FALSE;
+    if (!IsPokeSpriteNotFlipped(species)) gSprites[spriteId].hFlip = TRUE;
+    else gSprites[spriteId].hFlip = FALSE;
 
     return spriteId;
 }
