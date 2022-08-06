@@ -37,7 +37,7 @@ extern const u8 gUnknown_08D2EE48[];
 extern const u8 gUnknown_08D2EDFC[];
 extern const u16 gUnknown_08D2E150[];
 extern const struct SpriteTemplate gSpriteTemplates_840B3B4[];
-extern const struct SpriteTemplate gSpriteTemplate_8402500;
+extern const struct SpriteTemplate gMiniTwinklingStarSpriteTemplate;
 extern const struct SpriteTemplate gBattleAnimSpriteTemplate_84024E8;
 extern const struct CompressedSpriteSheet gBattleAnimPicTable[];
 extern const struct CompressedSpritePalette gBattleAnimPaletteTable[];
@@ -1924,12 +1924,12 @@ static void sub_814191C(u8 taskId)
     }
     else if (state >= 0 && gTasks[taskId].data[11] < 4)
     {
-        spriteId = CreateSprite(&gSpriteTemplate_8402500, x, y, 5);
+        spriteId = CreateSprite(&gMiniTwinklingStarSpriteTemplate, x, y, 5);
         gSprites[spriteId].oam.tileNum += 4;
     }
     else
     {
-        spriteId = CreateSprite(&gSpriteTemplate_8402500, x, y, 5);
+        spriteId = CreateSprite(&gMiniTwinklingStarSpriteTemplate, x, y, 5);
         gSprites[spriteId].oam.tileNum += 5;
     }
 
@@ -2029,7 +2029,7 @@ void sub_8141C08(u8 taskId)
 
 static void sub_8141C30(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 0);
+    InitSpritePosToAnimAttacker(sprite, 0);
     sprite->data[0] = 30;
     sprite->data[2] = GetBattlerSpriteCoord(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), 0) + gBattleAnimArgs[2];
     sprite->data[4] = GetBattlerSpriteCoord(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT), 1) + gBattleAnimArgs[3];

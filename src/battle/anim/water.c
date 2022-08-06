@@ -242,7 +242,7 @@ void sub_80D3838(struct Sprite *sprite)
     }
     else
     {
-        InitAnimSpritePos(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, 1);
     }
 
     sprite->data[7] = gBattleAnimArgs[2];
@@ -1004,7 +1004,7 @@ void sub_80D4C64(struct Sprite *sprite)
 
 void sub_80D4CA4(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, TRUE);
+    InitSpritePosToAnimAttacker(sprite, TRUE);
     sprite->data[1] = GetBattlerSpriteCoord(gBattleAnimTarget, 2);
     sprite->data[2] = GetBattlerSpriteCoord(gBattleAnimTarget, 3);
     sprite->data[3] = gBattleAnimArgs[2];

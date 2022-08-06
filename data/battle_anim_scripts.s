@@ -8133,7 +8133,7 @@ Move_STOCKPILE: @ 81D2DAE
 	loadspritegfx ANIM_TAG_GRAY_ORB
 	playsewithpan SE_M_MEGA_KICK, SOUND_PAN_ATTACKER
 	createvisualtask sub_80E1F8C, 2, 2, 8, 1, 0, 12, 32767
-	createvisualtask sub_812D674, 5
+	createvisualtask AnimTask_StockpileDeformMon, 5
 	call _81D2DEC
 	call _81D2DEC
 	waitforvisualfinish
@@ -8162,7 +8162,7 @@ Move_SPIT_UP: @ 81D2E65
 	loadspritegfx ANIM_TAG_RED_ORB_2
 	loadspritegfx ANIM_TAG_IMPACT
 	playsewithpan SE_M_TAKE_DOWN, SOUND_PAN_ATTACKER
-	createvisualtask sub_812D6CC, 5
+	createvisualtask AnimTask_SpitUpDeformMon, 5
 	createvisualtask AnimTask_ShakeMon2, 2, ANIM_ATTACKER, 1, 0, 8, 2
 	delay 45
 	playsewithpan SE_M_SPIT_UP, SOUND_PAN_ATTACKER

@@ -582,7 +582,7 @@ void sub_80DBA4C(struct Sprite *sprite)
         else
         {
             if (gBattleAnimArgs[2] == 0)
-                InitAnimSpritePos(sprite, var0);
+                InitSpritePosToAnimAttacker(sprite, var0);
             else
                 InitSpritePosToAnimTarget(sprite, var0);
         }

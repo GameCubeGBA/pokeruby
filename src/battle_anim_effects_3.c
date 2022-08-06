@@ -66,8 +66,8 @@ static void AnimRapidSpin_Step(struct Sprite *sprite);
 static void RapinSpinMonElevation_Step(u8 taskId);
 static void TormentAttacker_Step(u8 taskId);
 static void TormentAttacker_Callback(struct Sprite *sprite);
-static void sub_812D4EC(struct Sprite *sprite);
-static void sub_812D5E8(struct Sprite *sprite);
+static void AnimWishStar_Step(struct Sprite *sprite);
+static void AnimMiniTwinklingStar_Step(struct Sprite *sprite);
 static void sub_812DFEC(struct Sprite *sprite);
 static void sub_812E09C(struct Sprite *sprite);
 static void sub_812E0F8(struct Sprite *sprite);
@@ -113,10 +113,10 @@ static void AnimClappingHand2(struct Sprite *sprite);
 static void AnimRapidSpin(struct Sprite *sprite);
 static void AnimTriAttackTriangle(struct Sprite *sprite);
 static void AnimBatonPassPokeball(struct Sprite *sprite);
-static void sub_812D4B4(struct Sprite *sprite);
-static void sub_812D588(struct Sprite *sprite);
+static void AnimWishStar(struct Sprite *sprite);
+static void AnimMiniTwinklingStar(struct Sprite *sprite);
 static void sub_812DEAC(struct Sprite *sprite);
-static void sub_812D724(struct Sprite *sprite);
+static void AnimSwallowBlueOrb(struct Sprite *sprite);
 static void sub_812E4F0(struct Sprite *sprite);
 static void sub_812E7A0(struct Sprite *sprite);
 static void sub_812EA4C(struct Sprite *sprite);
@@ -555,10 +555,10 @@ const struct SpriteTemplate gBattleAnimSpriteTemplate_84024E8 =
     .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = sub_812D4B4,
+    .callback = AnimWishStar,
 };
 
-const struct SpriteTemplate gSpriteTemplate_8402500 =
+const struct SpriteTemplate gMiniTwinklingStarSpriteTemplate =
 {
     .tileTag = ANIM_TAG_GOLD_STARS,
     .paletteTag = ANIM_TAG_GOLD_STARS,
@@ -566,7 +566,7 @@ const struct SpriteTemplate gSpriteTemplate_8402500 =
     .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = sub_812D588,
+    .callback = AnimMiniTwinklingStar,
 };
 
 const union AffineAnimCmd gUnknown_08402518[] =
@@ -597,7 +597,7 @@ const struct SpriteTemplate gBattleAnimSpriteTemplate_8402578 =
     .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
-    .callback = sub_812D724,
+    .callback = AnimSwallowBlueOrb,
 };
 
 const union AffineAnimCmd gUnknown_08402590[] =
@@ -1434,7 +1434,7 @@ static void AnimSpikes(struct Sprite *sprite)
     s16 x;
     s16 y;
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     SetAverageBattlerPositions(gBattleAnimTarget, 0, &x, &y);
 
     if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
@@ -1978,7 +1978,7 @@ static void TormentAttacker_Callback(struct Sprite *sprite)
 static void AnimTriAttackTriangle(struct Sprite *sprite)
 {
     if (sprite->data[0] == 0)
-        InitAnimSpritePos(sprite, 0);
+        InitSpritePosToAnimAttacker(sprite, 0);
 
     sprite->data[0]++;
     if (++sprite->data[0] < 40)
@@ -2064,7 +2064,7 @@ static void AnimBatonPassPokeball(struct Sprite *sprite)
     }
 }
 
-static void sub_812D4B4(struct Sprite *sprite)
+static void AnimWishStar(struct Sprite *sprite)
 {
     if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
         sprite->x = -16;
@@ -2072,12 +2072,12 @@ static void sub_812D4B4(struct Sprite *sprite)
         sprite->x = 256;
 
     sprite->y = 0;
-    sprite->callback = sub_812D4EC;
+    sprite->callback = AnimWishStar_Step;
 }
 
-static void sub_812D4EC(struct Sprite *sprite)
+static void AnimWishStar_Step(struct Sprite *sprite)
 {
-    u32 newX;
+    int newX;
 
     sprite->data[0] += 72;
     if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
@@ -2091,18 +2091,18 @@ static void sub_812D4EC(struct Sprite *sprite)
     if (++sprite->data[2] % 3 == 0)
     {
         CreateSpriteAndAnimate(
-            &gSpriteTemplate_8402500,
+            &gMiniTwinklingStarSpriteTemplate,
             sprite->x + sprite->x2,
             sprite->y + sprite->y2,
             sprite->subpriority + 1);
     }
 
     newX = sprite->x + sprite->x2 + 32;
-    if (newX > 304)
+    if (newX > 272 || newX < -32)
         DestroyAnimSprite(sprite);
 }
 
-static void sub_812D588(struct Sprite *sprite)
+static void AnimMiniTwinklingStar(struct Sprite *sprite)
 {
     u8 rand;
     s8 y;
@@ -2118,10 +2118,10 @@ static void sub_812D588(struct Sprite *sprite)
         y = -y;
 
     sprite->y2 = y;
-    sprite->callback = sub_812D5E8;
+    sprite->callback = AnimMiniTwinklingStar_Step;
 }
 
-static void sub_812D5E8(struct Sprite *sprite)
+static void AnimMiniTwinklingStar_Step(struct Sprite *sprite)
 {
     if (++sprite->data[0] < 30)
     {
@@ -2149,7 +2149,7 @@ static void sub_812D5E8(struct Sprite *sprite)
         DestroySprite(sprite);
 }
 
-void sub_812D674(u8 taskId)
+void AnimTask_StockpileDeformMon(u8 taskId)
 {
     if (gTasks[taskId].data[0] == 0)
     {
@@ -2163,7 +2163,7 @@ void sub_812D674(u8 taskId)
     }
 }
 
-void sub_812D6CC(u8 taskId)
+void AnimTask_SpitUpDeformMon(u8 taskId)
 {
     if (gTasks[taskId].data[0] == 0)
     {
@@ -2177,12 +2177,12 @@ void sub_812D6CC(u8 taskId)
     }
 }
 
-static void sub_812D724(struct Sprite *sprite)
+static void AnimSwallowBlueOrb(struct Sprite *sprite)
 {
     switch (sprite->data[0])
     {
     case 0:
-        InitAnimSpritePos(sprite, 0);
+        InitSpritePosToAnimAttacker(sprite, 0);
         sprite->data[1] = 0x900;
         sprite->data[2] = GetBattlerSpriteCoord(gBattleAnimAttacker, 3);
         sprite->data[0]++;
@@ -2650,7 +2650,7 @@ static void sub_812E4F0(struct Sprite *sprite)
 {
     if (sprite->data[0] == 0)
     {
-        InitAnimSpritePos(sprite, 0);
+        InitSpritePosToAnimAttacker(sprite, 0);
         sprite->data[0]++;
     }
     else if (sprite->data[0]++ > 20)
@@ -4433,7 +4433,7 @@ static void sub_8130F5C(struct Sprite *sprite)
 {
     if (gBattleAnimArgs[0] == 0)
     {
-        InitAnimSpritePos(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, 1);
         sprite->data[7] = gBattleAnimAttacker;
     }
     else
@@ -4558,7 +4558,7 @@ static void sub_81311E4(struct Sprite *sprite)
     if (!(sprite->data[5] & 1))
     {
         CreateSprite(
-            &gSpriteTemplate_8402500,
+            &gMiniTwinklingStarSpriteTemplate,
             sprite->x + sprite->x2,
             sprite->y + sprite->y2, 5);
     }

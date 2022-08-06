@@ -260,7 +260,7 @@ void sub_80DC9A0(struct Sprite *sprite)
     if (IsContest())
         gBattleAnimArgs[2] /= 2;
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     sprite->data[0] = gBattleAnimArgs[2];
     sprite->data[1] = sprite->x;
     sprite->data[3] = sprite->y;
@@ -402,7 +402,7 @@ void AnimTranslateStinger(struct Sprite *sprite)
         }
     }
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     lVarX = GetBattlerSpriteCoord(gBattleAnimTarget, 2) + gBattleAnimArgs[2];
     lVarY = GetBattlerSpriteCoord(gBattleAnimTarget, 3) + gBattleAnimArgs[3];
@@ -429,7 +429,7 @@ void AnimTranslateStinger(struct Sprite *sprite)
 // arg 5: wave amplitude
 void AnimMissileArc(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     if (GetBattlerSide(gBattleAnimAttacker))
         gBattleAnimArgs[2] = -gBattleAnimArgs[2];

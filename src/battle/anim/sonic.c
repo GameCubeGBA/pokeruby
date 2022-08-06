@@ -136,7 +136,7 @@ void AnimSonicBoomProjectile(struct Sprite* sprite)
         gBattleAnimArgs[3] = -gBattleAnimArgs[3];
     }
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     targetXPos = GetBattlerSpriteCoord(gBattleAnimTarget, 2) + gBattleAnimArgs[2];
     targetYPos = GetBattlerSpriteCoord(gBattleAnimTarget, 3) + gBattleAnimArgs[3];
     rotation = ArcTan2Neg(targetXPos - sprite->x, targetYPos - sprite->y);

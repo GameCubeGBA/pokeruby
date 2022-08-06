@@ -385,7 +385,7 @@ void sub_80DCF60(struct Sprite *sprite)
 void sub_80DCFE4(struct Sprite *sprite)
 {
     if (gBattleAnimArgs[6] == 0)
-        InitAnimSpritePos(sprite, 0);
+        InitSpritePosToAnimAttacker(sprite, 0);
     else
         InitSpritePosToAnimTarget(sprite, FALSE);
 
@@ -570,7 +570,7 @@ void AnimDirtParticleAcrossScreen(struct Sprite *sprite)
 void AnimRaiseSprite(struct Sprite *sprite)
 {
     StartSpriteAnim(sprite, gBattleAnimArgs[4]);
-    InitAnimSpritePos(sprite, 0);
+    InitSpritePosToAnimAttacker(sprite, 0);
 
     sprite->data[0] = gBattleAnimArgs[3];
     sprite->data[2] = sprite->x;

@@ -797,7 +797,7 @@ void InitSpritePosToAnimTarget(struct Sprite *sprite, bool8 a2)
     sprite->y += gBattleAnimArgs[1];
 }
 
-void InitAnimSpritePos(struct Sprite *sprite, u8 a2)
+void InitSpritePosToAnimAttacker(struct Sprite *sprite, u8 a2)
 {
     if (!a2)
     {
@@ -1378,7 +1378,7 @@ void sub_80793C4(struct Sprite *sprite)
         else
             var = FALSE;
         if (!gBattleAnimArgs[2])
-            InitAnimSpritePos(sprite, var);
+            InitSpritePosToAnimAttacker(sprite, var);
         else
             InitSpritePosToAnimTarget(sprite, var);
         sprite->data[0]++;
@@ -1413,7 +1413,7 @@ void TranslateAnimSpriteToTargetMonLocation(struct Sprite *sprite)
     else
         v2 = 1;
 
-    InitAnimSpritePos(sprite, v1);
+    InitSpritePosToAnimAttacker(sprite, v1);
     if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
         gBattleAnimArgs[2] = -gBattleAnimArgs[2];
 
@@ -1426,7 +1426,7 @@ void TranslateAnimSpriteToTargetMonLocation(struct Sprite *sprite)
 
 void sub_80794A8(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     if (GetBattlerSide(gBattleAnimAttacker))
         gBattleAnimArgs[2] = -gBattleAnimArgs[2];
     sprite->data[0] = gBattleAnimArgs[4];
@@ -1460,7 +1460,7 @@ void sub_8079534(struct Sprite *sprite)
     }
     if (!gBattleAnimArgs[5])
     {
-        InitAnimSpritePos(sprite, r4);
+        InitSpritePosToAnimAttacker(sprite, r4);
         slot = gBattleAnimAttacker;
     }
     else

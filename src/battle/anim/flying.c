@@ -429,7 +429,7 @@ static void sub_80DA0DC(u8 taskId)
 
 static void sub_80DA16C(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
     {
         gBattleAnimArgs[2] = -gBattleAnimArgs[2];
@@ -494,7 +494,7 @@ static void sub_80DA208(struct Sprite *sprite)
 
 static void sub_80DA300(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     sprite->data[0] = gBattleAnimArgs[2];
     sprite->data[1] = gBattleAnimArgs[3];
     sprite->callback = sub_80DA348;
@@ -975,7 +975,7 @@ static void sub_80DB000(struct Sprite *sprite)
 
     if (gBattleAnimArgs[2] == 0)
     {
-        InitAnimSpritePos(sprite, 0);
+        InitSpritePosToAnimAttacker(sprite, 0);
     }
     else
     {
@@ -1048,7 +1048,7 @@ static void sub_80DB194(struct Sprite *sprite)
     switch (sprite->data[0])
     {
         case 0:
-            InitAnimSpritePos(sprite, 1);
+            InitSpritePosToAnimAttacker(sprite, 1);
             gSprites[GetAnimBattlerSpriteId(0)].invisible = TRUE;
             ++sprite->data[0];
             break;
@@ -1088,7 +1088,7 @@ static void sub_80DB1F4(struct Sprite *sprite)
 
 static void sub_80DB288(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     sprite->data[0] = gBattleAnimArgs[2];
     sprite->data[1] = gBattleAnimArgs[3];
     sprite->callback = sub_80DB2D0;

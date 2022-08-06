@@ -864,7 +864,7 @@ static void sub_80E27A0(struct Sprite *sprite)
 {
     StartSpriteAffineAnim(sprite, gBattleAnimArgs[3]);
     if (gBattleAnimArgs[2] == 0)
-        InitAnimSpritePos(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, 1);
     else
         InitSpritePosToAnimTarget(sprite, TRUE);
 
@@ -876,7 +876,7 @@ static void sub_80E27E8(struct Sprite *sprite)
 {
     StartSpriteAffineAnim(sprite, gBattleAnimArgs[3]);
     if (gBattleAnimArgs[2] == 0)
-        InitAnimSpritePos(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, 1);
     else
         InitSpritePosToAnimTarget(sprite, TRUE);
 
@@ -900,7 +900,7 @@ static void sub_80E2870(struct Sprite *sprite)
 
     StartSpriteAffineAnim(sprite, gBattleAnimArgs[1]);
     if (gBattleAnimArgs[0] == 0)
-        InitAnimSpritePos(sprite, 0);
+        InitSpritePosToAnimAttacker(sprite, 0);
     else
         InitSpritePosToAnimTarget(sprite, FALSE);
 
@@ -926,7 +926,7 @@ static void sub_80E2908(struct Sprite *sprite)
 static void sub_80E2978(struct Sprite *sprite)
 {
     if (gBattleAnimArgs[2] == 0)
-        InitAnimSpritePos(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, 1);
     else
         InitSpritePosToAnimTarget(sprite, TRUE);
 
@@ -939,7 +939,7 @@ static void sub_80E29C0(struct Sprite *sprite)
 {
     StartSpriteAffineAnim(sprite, gBattleAnimArgs[3]);
     if (gBattleAnimArgs[2] == 0)
-        InitAnimSpritePos(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, 1);
     else
         InitSpritePosToAnimTarget(sprite, TRUE);
 

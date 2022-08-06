@@ -152,7 +152,7 @@ void sub_80CACEC(u8 taskId)
 
 void sub_80CAD54(struct Sprite* sprite)
 {
-    InitAnimSpritePos(sprite, 0);
+    InitSpritePosToAnimAttacker(sprite, 0);
     sprite->data[0] = gBattleAnimArgs[3];
     sprite->data[1] = sprite->x;
     sprite->data[2] = sprite->x;
@@ -189,7 +189,7 @@ static void sub_80CADA8(struct Sprite* sprite)
 
 void sub_80CAE20(struct Sprite* sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     sprite->data[0] = gBattleAnimArgs[3];
     sprite->data[1] = sprite->x;
     sprite->data[2] = sprite->x;

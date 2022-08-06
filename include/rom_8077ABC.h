@@ -70,7 +70,7 @@ void sub_807A850(struct Task *task, u8 taskId);
 void sub_807A8D4(struct Sprite *sprite);
 void sub_807A960(struct Sprite *sprite);
 void sub_8078A34(struct Sprite *sprite);
-void InitAnimSpritePos(struct Sprite *sprite, u8);
+void InitSpritePosToAnimAttacker(struct Sprite *sprite, u8);
 void InitSpritePosToAnimTarget(struct Sprite *sprite, bool8);
 void StartAnimLinearTranslation(struct Sprite *sprite);
 void sub_8078D60(struct Sprite *sprite);

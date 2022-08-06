@@ -358,7 +358,7 @@ const struct SpriteTemplate gSpriteTemplate_83D9B40 =
 
 void sub_80D648C(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     sprite->data[0] = gBattleAnimArgs[3];
     sprite->data[1] = sprite->x;
