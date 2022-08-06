@@ -213,7 +213,7 @@ void sub_80DFC24(u8 taskId)
     bank = gBattleAnimAttacker;
     gTasks[taskId].data[1] = 16;
     REG_BLDALPHA = 16;
-    if (GetBattlerPosition_permutated(bank) == 1)
+    if (GetBattlerSpriteBGPriorityRank(bank) == 1)
         REG_BLDCNT = 0x3F42;
     else
         REG_BLDCNT = 0x3F44;
@@ -276,7 +276,7 @@ void sub_80DFD58(u8 taskId)
 void sub_80DFDC0(u8 taskId)
 {
     REG_BLDALPHA = 0x1000;
-    if (GetBattlerPosition_permutated(gBattleAnimAttacker) == 1)
+    if (GetBattlerSpriteBGPriorityRank(gBattleAnimAttacker) == 1)
         REG_BLDCNT = 0x3F42;
     else
         REG_BLDCNT = 0x3F44;
@@ -408,7 +408,7 @@ void sub_80DFFD0(struct Sprite *sprite)
 
 static void sub_80E00D0(struct Sprite *sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
         DestroySpriteAndMatrix(sprite);
 }
 
@@ -436,7 +436,7 @@ void sub_80E00EC(u8 taskId)
     else
         task->data[8] = -64;
 
-    task->data[3] = GetBattlerPosition_permutated(gBattleAnimAttacker);
+    task->data[3] = GetBattlerSpriteBGPriorityRank(gBattleAnimAttacker);
     if (task->data[3] == 1)
     {
         sub_8078914(&subStruct);
@@ -567,7 +567,7 @@ void sub_80E03BC(u8 taskId)
         }
         else
         {
-            task->data[3] = GetBattlerPosition_permutated(gBattleAnimTarget);
+            task->data[3] = GetBattlerSpriteBGPriorityRank(gBattleAnimTarget);
             if (task->data[3] == 1)
             {
                 REG_BLDCNT = 0x3F42;
@@ -795,7 +795,7 @@ static void sub_80E08CC(u8 priority)
 
 void sub_80E0918(u8 taskId)
 {
-    u8 toBG2 = GetBattlerPosition_permutated(gBattleAnimAttacker) ^ 1 ? 1 : 0;
+    u8 toBG2 = GetBattlerSpriteBGPriorityRank(gBattleAnimAttacker) ^ 1 ? 1 : 0;
     MoveBattlerSpriteToBG(gBattleAnimAttacker, toBG2);
     gSprites[gBattlerSpriteIds[gBattleAnimAttacker]].invisible = FALSE;
 
@@ -810,7 +810,7 @@ void sub_80E0918(u8 taskId)
 
 void sub_80E09C4(u8 taskId)
 {
-    u8 toBG2 = GetBattlerPosition_permutated(gBattleAnimAttacker) ^ 1 ? 1 : 0;
+    u8 toBG2 = GetBattlerSpriteBGPriorityRank(gBattleAnimAttacker) ^ 1 ? 1 : 0;
     sub_8076464(toBG2);
 
     if (IsAnimBankSpriteVisible(gBattleAnimAttacker ^ 2))
@@ -824,7 +824,7 @@ void sub_80E0A10(struct Sprite *sprite)
     sprite->x += gBattleAnimArgs[0];
     sprite->y += gBattleAnimArgs[1];
     StartSpriteAnim(sprite, gBattleAnimArgs[2]);
-    sprite->callback = sub_8078600;
+    sprite->callback = RunStoredCallbackWhenAnimEnds;
     StoreSpriteCallbackInData(sprite, DestroyAnimSprite);
 }
 

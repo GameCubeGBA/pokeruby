@@ -617,7 +617,7 @@ static void AnimIcePunchSwirlingParticle(struct Sprite *sprite)
 // arg 4: duration
 static void AnimIceBeamParticle(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     sprite->data[2] = GetBattlerSpriteCoord(gBattleAnimTarget, 2);
 
     if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
@@ -676,7 +676,7 @@ static void AnimSwirlingSnowball_Step1(struct Sprite *sprite)
     int i;
     s16 tempDataHolder[8];
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     sprite->data[0] = gBattleAnimArgs[4];
     sprite->data[1] = sprite->x;
@@ -796,7 +796,7 @@ static void AnimMoveParticleBeyondTarget(struct Sprite *sprite)
     int i;
     s16 tempDataHolder[8];
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     sprite->data[0] = gBattleAnimArgs[4];
     sprite->data[1] = sprite->x;
@@ -914,7 +914,7 @@ static void InitSwirlingFogAnim(struct Sprite *sprite)
     {
         if (gBattleAnimArgs[5] == 0)
         {
-            InitAnimSpritePos(sprite, 0);
+            InitSpritePosToAnimAttacker(sprite, 0);
         }
         else
         {
@@ -1518,7 +1518,7 @@ static void InitIceBallAnim(struct Sprite *sprite)
         animNum = 4;
 
     StartSpriteAffineAnim(sprite, animNum);
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     sprite->data[0] = gBattleAnimArgs[4];
 
@@ -1537,11 +1537,11 @@ static void InitIceBallAnim(struct Sprite *sprite)
 // Throws the ball of ice in Ice Ball.
 static void AnimThrowIceBall(struct Sprite *sprite)
 {
-    if (!TranslateAnimArc(sprite))
+    if (!TranslateAnimHorizontalArc(sprite))
         return;
 
     StartSpriteAnim(sprite, 1);
-    sprite->callback = sub_8078600;
+    sprite->callback = RunStoredCallbackWhenAnimEnds;
     StoreSpriteCallbackInData(sprite, DestroyAnimSprite);
 }
 

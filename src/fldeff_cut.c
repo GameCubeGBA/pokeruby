@@ -225,7 +225,7 @@ bool8 FldEff_CutGrass(void)
                 if (MetatileBehavior_IsCuttableGrass(tileBehavior) == TRUE)
                 {
                     SetCutGrassMetatile(x, y);
-                    sub_805BCC0(x, y);
+                    AllowObjectAtPosTriggerGroundEffects(x, y);
                 }
             }
         }

@@ -65,7 +65,7 @@ void sub_80CFE9C(struct Sprite* sprite)
     s16 r7;
     u16 var;
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     r6 = GetBattlerSpriteCoord(gBattleAnimTarget, 2);
     r7 = GetBattlerSpriteCoord(gBattleAnimTarget, 3) + gBattleAnimArgs[3];
     if (GetBattlerSide(gBattleAnimAttacker) != 0)

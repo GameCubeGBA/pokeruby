@@ -617,7 +617,7 @@ static bool8 sub_8058EF0(s16 x, s16 y, u8 direction)
 {
     if ((gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_SURFING)
      && MapGridGetElevationAt(x, y) == 3
-     && GetObjectEventIdByXYZ(x, y, 3) == 16)
+     && GetObjectEventIdByPosition(x, y, 3) == 16)
     {
         sub_805A20C(direction);
         return TRUE;
@@ -736,7 +736,7 @@ static void PlayerAvatarTransition_Surfing(struct ObjectEvent *objEvent)
     gFieldEffectArguments[2] = gPlayerAvatar.objectEventId;
     spriteId = FieldEffectStart(FLDEFF_SURF_BLOB);
     objEvent->fieldEffectSpriteId = spriteId;
-    sub_8127ED0(spriteId, 1);
+    SetSurfBlob_BobState(spriteId, 1);
 }
 
 static void PlayerAvatarTransition_Underwater(struct ObjectEvent *objEvent)
@@ -1006,7 +1006,7 @@ u8 PlayerGetZCoord(void)
 
 void unref_sub_8059790(s16 a, s16 b)
 {
-    sub_805C058(&gObjectEvents[gPlayerAvatar.objectEventId], a, b);
+    MoveObjectEventToMapCoords(&gObjectEvents[gPlayerAvatar.objectEventId], a, b);
 }
 
 u8 TestPlayerAvatarFlags(u8 a)
@@ -1215,7 +1215,7 @@ void sub_8059B88(u8 a)
         gSprites[gObjectEvents[gPlayerAvatar.objectEventId].fieldEffectSpriteId].invisible = a;
 }
 
-void sub_8059BF4(void)
+void SetPlayerAvatarFieldMove(void)
 {
     ObjectEventSetGraphicsId(&gObjectEvents[gPlayerAvatar.objectEventId], GetPlayerAvatarGraphicsIdByStateId(PLAYER_AVATAR_STATE_FIELD_MOVE));
     StartSpriteAnim(&gSprites[gPlayerAvatar.spriteId], 0);
@@ -1453,7 +1453,7 @@ static void taskFF_0805D1D4(u8 taskId)
         if (!ObjectEventClearHeldMovementIfFinished(playerObjEvent))
             return;
     }
-    sub_8127ED0(playerObjEvent->fieldEffectSpriteId, 2);
+    SetSurfBlob_BobState(playerObjEvent->fieldEffectSpriteId, 2);
     ObjectEventSetHeldMovement(playerObjEvent, GetJumpSpecialMovementAction((u8)gTasks[taskId].data[0]));
     gTasks[taskId].func = sub_805A2D0;
 }

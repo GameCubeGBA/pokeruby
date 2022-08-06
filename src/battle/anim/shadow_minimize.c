@@ -41,7 +41,7 @@ void AnimTask_Minimize_Step(u8 taskId)
             CreateMinimizeSprite(task, taskId);
         task->data[2]++;
         task->data[4] += 0x28;
-        obj_id_set_rotscale(task->data[0], task->data[4], task->data[4], 0);
+        SetSpriteRotScale(task->data[0], task->data[4], task->data[4], 0);
         sub_8079A64(task->data[0]);
         if (task->data[2] == 32)
         {
@@ -62,7 +62,7 @@ void AnimTask_Minimize_Step(u8 taskId)
                 task->data[2] = 0;
                 task->data[3] = 0;
                 task->data[4] = 0x100;
-                obj_id_set_rotscale(task->data[0], task->data[4], task->data[4], 0);
+                SetSpriteRotScale(task->data[0], task->data[4], task->data[4], 0);
                 sub_8079A64(task->data[0]);
                 task->data[1] = 2;
             }
@@ -81,7 +81,7 @@ void AnimTask_Minimize_Step(u8 taskId)
     case 4:
         task->data[2] += 2;
         task->data[4] -= 0x50;
-        obj_id_set_rotscale(task->data[0], task->data[4], task->data[4], 0);
+        SetSpriteRotScale(task->data[0], task->data[4], task->data[4], 0);
         sub_8079A64(task->data[0]);
         if (task->data[2] == 32)
         {
@@ -90,7 +90,7 @@ void AnimTask_Minimize_Step(u8 taskId)
         }
         break;
     case 5:
-        sub_8078F40(task->data[0]);
+        ResetSpriteRotScale(task->data[0]);
         gSprites[task->data[15]].y2 = 0;
         DestroyAnimVisualTask(taskId);
         break;
@@ -123,7 +123,7 @@ void CreateMinimizeSprite(struct Task* task, u8 taskId)
             gSprites[spriteId].data[1] = taskId;
             gSprites[spriteId].data[2] = 6;
             gSprites[spriteId].callback = ClonedMinimizeSprite_Step;
-            obj_id_set_rotscale(spriteId, task->data[4], task->data[4], 0);
+            SetSpriteRotScale(spriteId, task->data[4], task->data[4], 0);
             gSprites[spriteId].oam.affineMode = 1;
             CalcCenterToCornerVec(&gSprites[spriteId], gSprites[spriteId].oam.shape, gSprites[spriteId].oam.size, gSprites[spriteId].oam.affineMode);
         }

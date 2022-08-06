@@ -203,7 +203,7 @@ void Task_HandleTruckSequence(u8 taskId)
         data[1]++;
         if (data[1] == SECONDS(2.5))
         {
-            pal_fill_black();
+            FadeInFromBlack();
             data[1] = 0;
             data[0] = 2;
         }
@@ -340,8 +340,8 @@ void Task_HandlePorthole(u8 taskId)
     case EXIT_PORTHOLE: // exit porthole.
         FlagClear(FLAG_DONT_TRANSITION_MUSIC);
         FlagClear(FLAG_HIDE_MAP_NAME_POPUP);
-        copy_saved_warp2_bank_and_enter_x_to_warp1(0);
-        sp13E_warp_to_last_warp();
+        SetWarpDestinationToDynamicWarp(0);
+        DoDiveWarp();
         DestroyTask(taskId);
         break;
     }
@@ -367,7 +367,7 @@ void sub_80C791C(void)
 {
     sub_80C78A0();
     gObjectEvents[gPlayerAvatar.objectEventId].invisible = TRUE;
-    pal_fill_black();
+    FadeInFromBlack();
     CreateTask(Task_HandlePorthole, 80);
     ScriptContext2_Enable();
 }
@@ -377,7 +377,7 @@ void sub_80C7958(void)
     FlagSet(FLAG_SYS_CRUISE_MODE);
     FlagSet(FLAG_DONT_TRANSITION_MUSIC);
     FlagSet(FLAG_HIDE_MAP_NAME_POPUP);
-    saved_warp2_set(0, gSaveBlock1.location.mapGroup, gSaveBlock1.location.mapNum, -1);
+    SetDynamicWarp(0, gSaveBlock1.location.mapGroup, gSaveBlock1.location.mapNum, -1);
     sub_80C7754();
     sub_8080F9C();
 }

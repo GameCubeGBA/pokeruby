@@ -82,7 +82,7 @@ struct ObjectEventTemplate
 
 struct WarpEvent
 {
-    s16 x, y;
+    u16 x, y;
     u8 elevation;
     u8 warpId;
     u8 mapNum;
@@ -91,7 +91,7 @@ struct WarpEvent
 
 struct CoordEvent
 {
-    s16 x, y;
+    u16 x, y;
     u8 elevation;
     u16 trigger;
     u16 index;
@@ -152,8 +152,7 @@ struct MapHeader
     /* 0x15 */ u8 cave;
     /* 0x16 */ u8 weather;
     /* 0x17 */ u8 mapType;
-    /* 0x18 */ u8 filler_18;
-    /* 0x19 */ u8 escapeRope;
+    /* 0x18 */ u8 filler_18[2];
     /* 0x1A */ u8 flags;
     /* 0x1B */ u8 battleType;
 };

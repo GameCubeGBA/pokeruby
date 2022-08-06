@@ -478,7 +478,7 @@ void AnimBasicFistOrFoot(struct Sprite *sprite)
     StartSpriteAnim(sprite, gBattleAnimArgs[4]);
 
     if (gBattleAnimArgs[3] == 0)
-        InitAnimSpritePos(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, 1);
     else
         InitSpritePosToAnimTarget(sprite, TRUE);
 
@@ -984,7 +984,7 @@ void sub_80D9B48(struct Sprite *sprite)
 void sub_80D9BD4(struct Sprite *sprite)
 {
     if (gBattleAnimArgs[2] == 0)
-        InitAnimSpritePos(sprite, 0);
+        InitSpritePosToAnimAttacker(sprite, 0);
     else
         InitSpritePosToAnimTarget(sprite, FALSE);
 
@@ -997,7 +997,7 @@ void sub_80D9BD4(struct Sprite *sprite)
         StartSpriteAnim(sprite, 1);
     }
 
-    sprite->callback = sub_8078600;
+    sprite->callback = RunStoredCallbackWhenAnimEnds;
     StoreSpriteCallbackInData(sprite, DestroyAnimSprite);
 }
 

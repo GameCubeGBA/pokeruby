@@ -1462,7 +1462,7 @@ u8 sub_805B410(u8 graphicsId, u8 b, s16 x, s16 y, u8 elevation, u8 direction)
     *(u16 *)&spriteTemplate.paletteTag = 0xFFFF;
     x += 7;
     y += 7;
-    sub_8060470(&x, &y, 8, 16);
+    SetSpritePosToOffsetMapCoords(&x, &y, 8, 16);
     spriteId = CreateSpriteAtEnd(&spriteTemplate, x, y, 0);
     if (spriteId != MAX_SPRITES)
     {
@@ -1799,7 +1799,7 @@ void ObjectEventGetLocalIdAndMap(struct ObjectEvent *objectEvent, void *localId,
     *(u8 *)mapGroup = objectEvent->mapGroup;
 }
 
-void sub_805BCC0(s16 x, s16 y)
+void AllowObjectAtPosTriggerGroundEffects(s16 x, s16 y)
 {
     u8 objectEventId;
     struct ObjectEvent *objectEvent;
@@ -1972,7 +1972,7 @@ static void SetObjectEventCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
     objectEvent->currentCoords.y = y;
 }
 
-void sub_805C058(struct ObjectEvent *objectEvent, s16 x, s16 y)
+void MoveObjectEventToMapCoords(struct ObjectEvent *objectEvent, s16 x, s16 y)
 {
     struct Sprite *sprite = &gSprites[objectEvent->spriteId];
     const struct ObjectEventGraphicsInfo *graphicsInfo = GetObjectEventGraphicsInfo(objectEvent->graphicsId);
@@ -1996,7 +1996,7 @@ void sub_805C0F8(u8 localId, u8 mapNum, u8 mapGroup, s16 x, s16 y)
     {
         x += 7;
         y += 7;
-        sub_805C058(&gObjectEvents[objectEventId], x, y);
+        MoveObjectEventToMapCoords(&gObjectEvents[objectEventId], x, y);
     }
 }
 
@@ -2030,7 +2030,7 @@ void UpdateObjectEventCoordsForCameraUpdate(void)
     }
 }
 
-u8 GetObjectEventIdByXYZ(u16 x, u16 y, u8 z)
+u8 GetObjectEventIdByPosition(u16 x, u16 y, u8 z)
 {
     u8 i;
 
@@ -4626,7 +4626,7 @@ void sub_80603CC(s16 x1, s16 y1, s16 *x2, s16 *y2)
     *y2 = ((y1 - gSaveBlock1.pos.y) << 4) + y3;
 }
 
-void sub_8060470(s16 *x, s16 *y, s16 dx, s16 dy)
+void SetSpritePosToOffsetMapCoords(s16 *x, s16 *y, s16 dx, s16 dy)
 {
     sub_80603CC(*x, *y, x, y);
     *x += dx;
@@ -7450,7 +7450,7 @@ static u8 ObjectEventGetNearbyReflectionType(struct ObjectEvent *objEvent)
     s16 j;
     u8 result;
     u8 b;
-    // Needed to match
+    // Needed to match. Not a fakematch though
     s16 one;
 
 #define RETURN_REFLECTION_TYPE_AT(x, y)              \
@@ -7589,8 +7589,8 @@ u8 ZCoordToPriority(u8 z)
 
 void ObjectEventUpdateZCoord(struct ObjectEvent *objEvent)
 {
-    u8 z = MapGridGetElevationAt(objEvent->currentCoords.x, objEvent->currentCoords.y);
-    u8 z2 = MapGridGetElevationAt(objEvent->previousCoords.x, objEvent->previousCoords.y);
+    u8 curElevation = MapGridGetElevationAt(objEvent->currentCoords.x, objEvent->currentCoords.y);
+    u8 prevElevation = MapGridGetElevationAt(objEvent->previousCoords.x, objEvent->previousCoords.y);
 
     if (curElevation == 15 || prevElevation == 15)
         return;

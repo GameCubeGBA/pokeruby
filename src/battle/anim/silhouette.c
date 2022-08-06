@@ -41,7 +41,7 @@ void sub_80CB3A8(u8 taskId)
     }
 
     gTasks[taskId].data[11] += 16;
-    obj_id_set_rotscale(spriteId, gTasks[taskId].data[11], gTasks[taskId].data[11], 0);
+    SetSpriteRotScale(spriteId, gTasks[taskId].data[11], gTasks[taskId].data[11], 0);
     sub_8079A64(spriteId);
     gTasks[taskId].data[1]--;
     if (!gTasks[taskId].data[1])
@@ -58,7 +58,7 @@ void sub_80CB438(u8 taskId)
         if (gTasks[taskId].data[0] == 0)
         {
             u8 spriteId = GetAnimBattlerSpriteId(1);
-            sub_8078F40(spriteId);
+            ResetSpriteRotScale(spriteId);
             gSprites[spriteId].x2 = 0;
             gSprites[spriteId].y2 = 0;
             gTasks[taskId].data[0]++;

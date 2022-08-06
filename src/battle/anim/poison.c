@@ -197,7 +197,7 @@ void sub_80D9D70(struct Sprite *sprite)
     if (!gBattleAnimArgs[3])
         StartSpriteAnim(sprite, 2);
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     sprite->data[0] = gBattleAnimArgs[2];
     sprite->data[2] = GetBattlerSpriteCoord(gBattleAnimTarget, 2);
@@ -211,7 +211,7 @@ void sub_80D9D70(struct Sprite *sprite)
 
 static void sub_80D9DD4(struct Sprite *sprite) // same as sub_80D9E78
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
         DestroyAnimSprite(sprite);
 }
 
@@ -221,7 +221,7 @@ void sub_80D9DF0(struct Sprite *sprite)
     if (!gBattleAnimArgs[3])
         StartSpriteAnim(sprite, 2);
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     SetAverageBattlerPositions(gBattleAnimTarget, 1, &l1, &l2);
 
     if (GetBattlerSide(gBattleAnimAttacker))
@@ -239,7 +239,7 @@ void sub_80D9DF0(struct Sprite *sprite)
 
 static void sub_80D9E78(struct Sprite *sprite) // same as sub_80D9DD4
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
         DestroyAnimSprite(sprite);
 }
 

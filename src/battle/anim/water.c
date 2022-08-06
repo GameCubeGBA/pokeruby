@@ -23,7 +23,7 @@ extern const union AffineAnimCmd *const gSpriteAffineAnimTable_83DA318[];
 extern const union AnimCmd *const gSpriteAnimTable_83D9BC8[];
 
 void PrepareBattlerSpriteForRotScale(u8, u8);
-void sub_8078F40(u8);
+void ResetSpriteRotScale(u8);
 void sub_8079A64(u8);
 void sub_80D37FC(struct Sprite *sprite);
 void sub_80D3838(struct Sprite *sprite);
@@ -242,7 +242,7 @@ void sub_80D3838(struct Sprite *sprite)
     }
     else
     {
-        InitAnimSpritePos(sprite, 1);
+        InitSpritePosToAnimAttacker(sprite, 1);
     }
 
     sprite->data[7] = gBattleAnimArgs[2];
@@ -610,7 +610,7 @@ void sub_80D4150(u8 taskId)
             gSprites[task->data[15]].y--;
             if (sub_8079C74(task) == 0)
             {
-                sub_8078F40(task->data[15]);
+                ResetSpriteRotScale(task->data[15]);
                 gSprites[task->data[15]].y = task->data[5];
                 task->data[4] = 0;
                 task->data[0]++;
@@ -937,7 +937,7 @@ void sub_80D4AD0(struct Task *task)
 
 void sub_80D4B3C(struct Sprite *sprite)
 {
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
     {
         sprite->x += sprite->x2;
         sprite->y += sprite->y2;
@@ -954,7 +954,7 @@ void sub_80D4BA4(struct Sprite *sprite)
 {
     u16 i;
 
-    if (TranslateAnimArc(sprite))
+    if (TranslateAnimHorizontalArc(sprite))
     {
         for (i = 0; i < NUM_TASKS; i++)
         {
@@ -1004,7 +1004,7 @@ void sub_80D4C64(struct Sprite *sprite)
 
 void sub_80D4CA4(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, TRUE);
+    InitSpritePosToAnimAttacker(sprite, TRUE);
     sprite->data[1] = GetBattlerSpriteCoord(gBattleAnimTarget, 2);
     sprite->data[2] = GetBattlerSpriteCoord(gBattleAnimTarget, 3);
     sprite->data[3] = gBattleAnimArgs[2];

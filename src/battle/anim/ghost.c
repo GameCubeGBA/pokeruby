@@ -224,7 +224,7 @@ const struct SpriteTemplate gSpriteTemplate_83DAF98 =
 
 static void sub_80DDB6C(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     sprite->data[0] = gBattleAnimArgs[2];
     sprite->data[1] = sprite->x;
     sprite->data[2] = GetBattlerSpriteCoord(gBattleAnimTarget, 2);
@@ -350,7 +350,7 @@ void sub_80DDDF0(u8 taskId)
     REG_BLDALPHA = 0x1000;
     spriteId = GetAnimBattlerSpriteId(0);
     PrepareBattlerSpriteForRotScale(spriteId, 1);
-    obj_id_set_rotscale(spriteId, 128, 128, 0);
+    SetSpriteRotScale(spriteId, 128, 128, 0);
     gSprites[spriteId].invisible = FALSE;
     gTasks[taskId].data[0] = 128;
     gTasks[taskId].data[1] = *gBattleAnimArgs;
@@ -388,11 +388,11 @@ static void sub_80DDED0(u8 taskId)
     gTasks[taskId].data[0] += 8;
     if (gTasks[taskId].data[0] <= 0xFF)
     {
-        obj_id_set_rotscale(spriteId, gTasks[taskId].data[0], gTasks[taskId].data[0], 0);
+        SetSpriteRotScale(spriteId, gTasks[taskId].data[0], gTasks[taskId].data[0], 0);
     }
     else
     {
-        sub_8078F40(spriteId);
+        ResetSpriteRotScale(spriteId);
         DestroyAnimVisualTask(taskId);
         REG_BLDCNT = 0;
         REG_BLDALPHA = 0;
@@ -605,7 +605,7 @@ static void sub_80DE3D4(u8 taskId)
 {
     s16 startLine;
     struct Task *task = &gTasks[taskId];
-    u8 position = GetBattlerPosition_permutated(gBattleAnimTarget);
+    u8 position = GetBattlerSpriteBGPriorityRank(gBattleAnimTarget);
 
     switch (task->data[15])
     {
@@ -707,7 +707,7 @@ static void sub_80DE61C(u8 taskId)
 static void sub_80DE6B0(u8 taskId)
 {
     struct Task *task = &gTasks[taskId];
-    u8 position = GetBattlerPosition_permutated(gBattleAnimTarget);
+    u8 position = GetBattlerSpriteBGPriorityRank(gBattleAnimTarget);
 
     switch (task->data[15])
     {
@@ -1031,7 +1031,7 @@ static void sub_80DEF3C(struct Sprite *sprite)
     s16 xDelta;
     s16 xDelta2;
 
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
     if (GetBattlerSide(gBattleAnimAttacker) == B_SIDE_PLAYER)
     {
         xDelta = 24;
@@ -1173,7 +1173,7 @@ void sub_80DF1A4(u8 taskId)
     task->data[0] = 0;
     task->data[1] = 16;
     task->data[9] = GetBattlerSpriteCoord(gBattleAnimAttacker, 2);
-    task->data[10] = sub_8077FC0(gBattleAnimAttacker);
+    task->data[10] = GetBattlerYCoordWithElevation(gBattleAnimAttacker);
     task->data[11] = (GetBattlerSpriteCoordAttr(gBattleAnimAttacker, 1) / 2) + 8;
     task->data[7] = 0;
     task->data[5] = GetBattlerSpriteBGPriority(gBattleAnimAttacker);

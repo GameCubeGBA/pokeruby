@@ -36,7 +36,7 @@ void sub_80D0C88(u8 taskId)
     struct ScanlineEffectParams params;
 
     s16 i;
-    task->data[0] = sub_8077FC0(gBattleAnimTarget) + 32;
+    task->data[0] = GetBattlerYCoordWithElevation(gBattleAnimTarget) + 32;
     task->data[1] = 4;
     task->data[2] = 0;
     task->data[3] = 0;
@@ -44,7 +44,7 @@ void sub_80D0C88(u8 taskId)
     task->data[5] = 0;
     task->data[15] = GetBattlerSpriteCoordAttr(gBattleAnimTarget, 0);
 
-    if (GetBattlerPosition_permutated(gBattleAnimTarget) == 1)
+    if (GetBattlerSpriteBGPriorityRank(gBattleAnimTarget) == 1)
     {
         task->data[6] = gBattle_BG1_X;
         params.dmaDest = (u16 *)REG_ADDR_BG1HOFS;
@@ -121,7 +121,7 @@ static void sub_80D0D68(u8 taskId)
 void sub_80D0E30(struct Sprite* sprite)
 {
     sprite->x = GetBattlerSpriteCoord(gBattleAnimTarget, 0) - 16;
-    sprite->y = sub_8077FC0(gBattleAnimTarget) + 16;
+    sprite->y = GetBattlerYCoordWithElevation(gBattleAnimTarget) + 16;
     sprite->data[0] = 0;
     sprite->data[1] = 0;
     sprite->data[2] = 0;

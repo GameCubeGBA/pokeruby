@@ -452,12 +452,12 @@ void SetWarpDestination(s8 mapGroup, s8 mapNum, s8 warpId, s8 x, s8 y)
     SetWarpData(&gWarpDestination, mapGroup, mapNum, warpId, x, y);
 }
 
-void warp1_set_2(s8 mapGroup, s8 mapNum, s8 warpId)
+void SetWarpDestinationToMapWarp(s8 mapGroup, s8 mapNum, s8 warpId)
 {
     SetWarpDestination(mapGroup, mapNum, warpId, -1, -1);
 }
 
-void saved_warp2_set(int unused, s8 mapGroup, s8 mapNum, s8 warpId)
+void SetDynamicWarp(int unused, s8 mapGroup, s8 mapNum, s8 warpId)
 {
     SetWarpData(&gSaveBlock1.dynamicWarp, mapGroup, mapNum, warpId, gSaveBlock1.pos.x, gSaveBlock1.pos.y);
 }
@@ -467,7 +467,7 @@ void saved_warp2_set_2(int unused, s8 mapGroup, s8 mapNum, s8 warpId, s8 x, s8 y
     SetWarpData(&gSaveBlock1.dynamicWarp, mapGroup, mapNum, warpId, x, y);
 }
 
-void copy_saved_warp2_bank_and_enter_x_to_warp1(u8 unused)
+void SetWarpDestinationToDynamicWarp(u8 unused)
 {
     gWarpDestination = gSaveBlock1.dynamicWarp;
 }
@@ -493,11 +493,11 @@ void Overworld_SetHealLocationWarp(u8 healLocationId)
         SetWarpData(&gSaveBlock1.lastHealLocation, healLocation->group, healLocation->map, -1, healLocation->x, healLocation->y);
 }
 
-void sub_80535C4(s16 a1, s16 a2)
+void UpdateEscapeWarp(s16 a1, s16 a2)
 {
     u8 currMapType = Overworld_GetMapTypeOfSaveblockLocation();
     u8 destMapType = GetMapTypeByGroupAndId(gWarpDestination.mapGroup, gWarpDestination.mapNum);
-    if (is_map_type_1_2_3_5_or_6(currMapType) && is_map_type_1_2_3_5_or_6(destMapType) != TRUE)
+    if (IsMapTypeOutdoors(currMapType) && IsMapTypeOutdoors(destMapType) != TRUE)
         sub_805363C(gSaveBlock1.location.mapGroup, gSaveBlock1.location.mapNum, -1, a1 - 7, a2 - 6);
 }
 
@@ -506,7 +506,7 @@ void sub_805363C(s8 mapGroup, s8 mapNum, s8 warpId, s8 x, s8 y)
     SetWarpData(&gSaveBlock1.warp4, mapGroup, mapNum, warpId, x, y);
 }
 
-void sub_8053678(void)
+void SetWarpDestinationToEscapeWarp(void)
 {
     gWarpDestination = gSaveBlock1.warp4;
 }
@@ -644,7 +644,7 @@ void sub_8053994(u32 a1)
 
     LoadCurrentMapData();
     LoadObjEventTemplatesFromHeader();
-    v2 = is_map_type_1_2_3_5_or_6(gMapHeader.mapType);
+    v2 = IsMapTypeOutdoors(gMapHeader.mapType);
     v3 = Overworld_MapTypeIsIndoors(gMapHeader.mapType);
     ClearTempFieldEventData();
     ResetCyclingRoadChallengeData();
@@ -1002,7 +1002,7 @@ static void PlayAmbientCry(void)
         return;
     pan = (Random() % 88) + 212;
     volume = (Random() % 30) + 50;
-    PlayCry2(sAmbientCrySpecies, pan, volume, 1);
+    PlayCry_NormalNoDucking(sAmbientCrySpecies, pan, volume, 1);
 }
 
 void UpdateAmbientCry(s16 *state, u16 *delayCounter)
@@ -1073,7 +1073,7 @@ u8 GetLastUsedWarpMapType(void)
     return GetMapTypeByWarpData(&gLastUsedWarp);
 }
 
-bool8 is_map_type_1_2_3_5_or_6(u8 mapType)
+bool8 IsMapTypeOutdoors(u8 mapType)
 {
     if (mapType == MAP_TYPE_ROUTE
      || mapType == MAP_TYPE_TOWN
@@ -2396,7 +2396,7 @@ void sub_80557E8(void)
 void sub_80557F4(void)
 {
     PlaySE(SE_WIN_OPEN);
-    sub_8071310();
+    ShowStartMenu();
     ScriptContext2_Enable();
 }
 

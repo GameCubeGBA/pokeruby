@@ -221,7 +221,7 @@ void sub_80D5210(struct Sprite *sprite)
 // arg 2: initial wave offset
 void AnimFireRing(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     sprite->data[7] = gBattleAnimArgs[2];
     sprite->data[0] = 0;
@@ -307,7 +307,7 @@ void AnimFireCross(struct Sprite *sprite)
 
 void sub_80D53B4(struct Sprite *sprite)
 {
-    InitAnimSpritePos(sprite, 1);
+    InitSpritePosToAnimAttacker(sprite, 1);
 
     sprite->data[1] = gBattleAnimArgs[2];
     sprite->data[0] = gBattleAnimArgs[3];
@@ -455,7 +455,7 @@ static void sub_80D54E0(u8 taskId) // animate Move_ERUPTION?
         if (!sub_8079C74(task))
         {
             gSprites[task->data[15]].y = task->data[4];
-            sub_8078F40(task->data[15]);
+            ResetSpriteRotScale(task->data[15]);
 
             task->data[2] = 0;
             task->data[0]++;
