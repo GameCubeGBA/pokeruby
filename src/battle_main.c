@@ -121,7 +121,7 @@ extern void (*gBattleMainFunc)(void);
 u8 gLeveledUpInBattle;
 void (*gBattlerControllerFuncs[MAX_BATTLERS_COUNT])(void);
 u8 gHealthboxSpriteIds[MAX_BATTLERS_COUNT];
-u8 gUnknown_0300434C[MAX_BATTLERS_COUNT];
+u8 gBattleControllerData[MAX_BATTLERS_COUNT];
 extern u16 gBattleTypeFlags;
 extern u8 gReservedSpritePaletteCount;
 extern u16 gTrainerBattleOpponent;
@@ -1135,6 +1135,7 @@ u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
             }
         }
         gBattleTypeFlags |= gTrainers[trainerNum].doubleBattle;
+
     }
     return gTrainers[trainerNum].partySize;
 }
@@ -3109,8 +3110,8 @@ void sub_80102AC(struct Sprite *sprite)
 {
     if (sprite->animEnded)
     {
-        sub_804777C(sprite->data[0]);
-        sub_8043DFC(gHealthboxSpriteIds[sprite->data[0]]);
+        StartHealthboxSlideIn(sprite->data[0]);
+        SetHealthboxSpriteVisible(gHealthboxSpriteIds[sprite->data[0]]);
         sprite->callback = nullsub_37;
         StartSpriteAnimIfDifferent(sprite, 0);
         BeginNormalPaletteFade(0x00020000, 0, 10, 0, RGB(15, 15, 15));
@@ -3283,12 +3284,12 @@ void dp11b_obj_instanciate(u8 bank, u8 b, s8 c, s8 d)
 
     if (b)
     {
-        if (ewram17810[bank].unk0_1)
+        if (gBattleSprites_healthBoxesData[bank].unk0_1)
             return;
     }
     else
     {
-        if (ewram17810[bank].unk0_2)
+        if (gBattleSprites_healthBoxesData[bank].unk0_2)
             return;
     }
 
@@ -3296,15 +3297,15 @@ void dp11b_obj_instanciate(u8 bank, u8 b, s8 c, s8 d)
     if (b == TRUE)
     {
         objectID = gHealthboxSpriteIds[bank];
-        ewram17810[bank].unk2 = spriteId;
-        ewram17810[bank].unk0_1 = 1;
+        gBattleSprites_healthBoxesData[bank].unk2 = spriteId;
+        gBattleSprites_healthBoxesData[bank].unk0_1 = 1;
         gSprites[spriteId].data[0] = 0x80;
     }
     else
     {
         objectID = gBattlerSpriteIds[bank];
-        ewram17810[bank].unk3 = spriteId;
-        ewram17810[bank].unk0_2 = 1;
+        gBattleSprites_healthBoxesData[bank].unk3 = spriteId;
+        gBattleSprites_healthBoxesData[bank].unk0_2 = 1;
         gSprites[spriteId].data[0] = 0xC0;
     }
     gSprites[spriteId].data[1] = c;
@@ -3321,19 +3322,19 @@ void dp11b_obj_free(u8 a, u8 b)
 
     if (b == TRUE)
     {
-        if (!ewram17810[a].unk0_1)
+        if (!gBattleSprites_healthBoxesData[a].unk0_1)
             return;
-        r4 = gSprites[ewram17810[a].unk2].data[3];
-        DestroySprite(&gSprites[ewram17810[a].unk2]);
-        ewram17810[a].unk0_1 = 0;
+        r4 = gSprites[gBattleSprites_healthBoxesData[a].unk2].data[3];
+        DestroySprite(&gSprites[gBattleSprites_healthBoxesData[a].unk2]);
+        gBattleSprites_healthBoxesData[a].unk0_1 = 0;
     }
     else
     {
-        if (!ewram17810[a].unk0_2)
+        if (!gBattleSprites_healthBoxesData[a].unk0_2)
             return;
-        r4 = gSprites[ewram17810[a].unk3].data[3];
-        DestroySprite(&gSprites[ewram17810[a].unk3]);
-        ewram17810[a].unk0_2 = 0;
+        r4 = gSprites[gBattleSprites_healthBoxesData[a].unk3].data[3];
+        DestroySprite(&gSprites[gBattleSprites_healthBoxesData[a].unk3]);
+        gBattleSprites_healthBoxesData[a].unk0_2 = 0;
     }
     gSprites[r4].x2 = 0;
     gSprites[r4].y2 = 0;

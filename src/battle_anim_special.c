@@ -639,7 +639,7 @@ void sub_813F9B8(u8 taskId)
 
 void sub_813F9E0(u8 taskId)
 {
-    if (ewram17840.unk8 == 5)
+    if (gBattleSprites_animationData.unk8 == 5)
         gBattleAnimArgs[7] = -1;
     else
         gBattleAnimArgs[7] = 0;
@@ -690,7 +690,7 @@ void sub_813FA94(u8 taskId)
     gSprites[spriteId].data[1] = GetBattlerSpriteCoord(gBattleAnimTarget, 0);
     gSprites[spriteId].data[2] = GetBattlerSpriteCoord(gBattleAnimTarget, 1) - 16;
     gSprites[spriteId].callback = sub_813FD90;
-    ewram17840.unk9_1 = gSprites[gBattlerSpriteIds[gBattleAnimTarget]].invisible;
+    gBattleSprites_animationData.unk9_1 = gSprites[gBattlerSpriteIds[gBattleAnimTarget]].invisible;
     gTasks[taskId].data[0] = spriteId;
     gTasks[taskId].func = sub_813FB7C;
 }
@@ -773,7 +773,7 @@ static void sub_813FDC0(struct Sprite *sprite)
 
     if (TranslateAnimHorizontalArc(sprite))
     {
-        if (ewram17840.unk8 == 5)
+        if (gBattleSprites_animationData.unk8 == 5)
         {
             sprite->callback = sub_81407B8;
         }
@@ -933,7 +933,7 @@ static void sub_8140058(struct Sprite *sprite)
         sprite->data[3] = 0;
         sprite->y += Cos(64, 32);
         sprite->y2 = 0;
-        if (ewram17840.unk8 == 0)
+        if (gBattleSprites_animationData.unk8 == 0)
         {
             sprite->data[5] = 0;
             sprite->callback = sub_8140410;
@@ -954,7 +954,7 @@ static void sub_8140158(struct Sprite *sprite)
         sprite->data[3] = 0;
         sprite->affineAnimPaused = 1;
         StartSpriteAffineAnim(sprite, 1);
-        ewram17840.unkC = 0;
+        gBattleSprites_animationData.unkC = 0;
         sprite->callback = sub_81401A0;
         PlaySE(SE_BALL);
     }
@@ -968,14 +968,14 @@ static void sub_81401A0(struct Sprite *sprite)
     switch (sprite->data[3] & 0xFF)
     {
     case 0:
-        if ((s16)ewram17840.unkC > 0xFF)
+        if ((s16)gBattleSprites_animationData.unkC > 0xFF)
         {
             sprite->x2 += sprite->data[4];
-            ewram17840.unkC &= 0xFF;
+            gBattleSprites_animationData.unkC &= 0xFF;
         }
         else
         {
-            ewram17840.unkC += 0xB0;
+            gBattleSprites_animationData.unkC += 0xB0;
         }
 
         sprite->data[5]++;
@@ -983,7 +983,7 @@ static void sub_81401A0(struct Sprite *sprite)
         var0 = sprite->data[5] + 7;
         if (var0 > 14)
         {
-            ewram17840.unkC = 0;
+            gBattleSprites_animationData.unkC = 0;
             sprite->data[3]++;
             sprite->data[5] = 0;
         }
@@ -1006,14 +1006,14 @@ static void sub_81401A0(struct Sprite *sprite)
         }
         break;
     case 2:
-        if ((s16)ewram17840.unkC > 0xFF)
+        if ((s16)gBattleSprites_animationData.unkC > 0xFF)
         {
             sprite->x2 += sprite->data[4];
-            ewram17840.unkC &= 0xFF;
+            gBattleSprites_animationData.unkC &= 0xFF;
         }
         else
         {
-            ewram17840.unkC += 0xB0;
+            gBattleSprites_animationData.unkC += 0xB0;
         }
 
         sprite->data[5]++;
@@ -1021,7 +1021,7 @@ static void sub_81401A0(struct Sprite *sprite)
         var0 = sprite->data[5] + 12;
         if (var0 > 24)
         {
-            ewram17840.unkC = 0;
+            gBattleSprites_animationData.unkC = 0;
             sprite->data[3]++;
             sprite->data[5] = 0;
         }
@@ -1043,14 +1043,14 @@ static void sub_81401A0(struct Sprite *sprite)
             ChangeSpriteAffineAnim(sprite, 1);
         // fall through
     case 4:
-        if ((s16)ewram17840.unkC > 0xFF)
+        if ((s16)gBattleSprites_animationData.unkC > 0xFF)
         {
             sprite->x2 += sprite->data[4];
-            ewram17840.unkC &= 0xFF;
+            gBattleSprites_animationData.unkC &= 0xFF;
         }
         else
         {
-            ewram17840.unkC += 0xB0;
+            gBattleSprites_animationData.unkC += 0xB0;
         }
 
         sprite->data[5]++;
@@ -1058,7 +1058,7 @@ static void sub_81401A0(struct Sprite *sprite)
         var0 = sprite->data[5] + 4;
         if (var0 > 8)
         {
-            ewram17840.unkC = 0;
+            gBattleSprites_animationData.unkC = 0;
             sprite->data[3]++;
             sprite->data[5] = 0;
             sprite->data[4] = -sprite->data[4];
@@ -1067,14 +1067,14 @@ static void sub_81401A0(struct Sprite *sprite)
     case 5:
         sprite->data[3] += 0x100;
         state = sprite->data[3] >> 8;
-        if (state == ewram17840.unk8)
+        if (state == gBattleSprites_animationData.unk8)
         {
             sprite->affineAnimPaused = 1;
             sprite->callback = sub_8140410;
         }
         else
         {
-            if (ewram17840.unk8 == 4 && state == 3)
+            if (gBattleSprites_animationData.unk8 == 4 && state == 3)
             {
                 sprite->callback = sub_8140434;
                 sprite->affineAnimPaused = 1;
@@ -1250,7 +1250,7 @@ static void sub_81406BC(struct Sprite *sprite)
     if (sprite->animEnded && next)
     {
         gSprites[gBattlerSpriteIds[gBattleAnimTarget]].y2 = 0;
-        gSprites[gBattlerSpriteIds[gBattleAnimTarget]].invisible = ewram17840.unk9_1;
+        gSprites[gBattlerSpriteIds[gBattleAnimTarget]].invisible = gBattleSprites_animationData.unk9_1;
         sprite->data[0] = 0;
         sprite->callback = sub_81405C8;
         gDoingBattleAnim = 0;
@@ -1309,7 +1309,7 @@ u8 AnimateBallOpenParticles(u8 x, u8 y, u8 priority, u8 subpriority, u8 ballInde
     gTasks[taskId].data[15] = ballIndex;
     PlaySE(SE_BALL_OPEN);
     if (gMain.inBattle)
-        ewram17840.unkA++;
+        gBattleSprites_animationData.unkA++;
 
     return taskId;
 }
@@ -1657,7 +1657,7 @@ static void DestroyBallOpenAnimationParticle(struct Sprite *sprite)
     }
     else if (sprite->data[7] == 1)
     {
-        if (--ewram17840.unkA == 0)
+        if (--gBattleSprites_animationData.unkA == 0)
         {
             for (i = 0; i < 12; i++)
             {
@@ -1853,7 +1853,7 @@ void sub_8141808(u8 taskId)
     DestroyAnimVisualTask(taskId);
 }
 
-void sub_8141828(u8 battler, struct Pokemon *mon)
+void TryShinyAnimation(u8 battler, struct Pokemon *mon)
 {
     int isShiny;
     u32 otId, personality;
@@ -1861,7 +1861,7 @@ void sub_8141828(u8 battler, struct Pokemon *mon)
     u8 taskId1, taskId2;
 
     isShiny = 0;
-    ewram17810[battler].unk0_7 = 1;
+    gBattleSprites_healthBoxesData[battler].unk0_7 = 1;
     otId = GetMonData(mon, MON_DATA_OT_ID);
     personality = GetMonData(mon, MON_DATA_PERSONALITY);
 
@@ -1889,7 +1889,7 @@ void sub_8141828(u8 battler, struct Pokemon *mon)
         }
     }
 
-    ewram17810[battler].unk1_0 = 1;
+    gBattleSprites_healthBoxesData[battler].unk1_0 = 1;
 }
 
 static void sub_814191C(u8 taskId)
@@ -1907,7 +1907,7 @@ static void sub_814191C(u8 taskId)
         return;
     }
     
-    if (ewram17840.unkA)
+    if (gBattleSprites_animationData.unkA)
         return;
 
     counter = gTasks[taskId].data[10]++;
@@ -1970,7 +1970,7 @@ static void sub_8141AD8(u8 taskId)
         if (gTasks[taskId].data[1] == 1)
         {
             battler = gTasks[taskId].data[0];
-            ewram17810[battler].unk1_0 = 1;
+            gBattleSprites_healthBoxesData[battler].unk1_0 = 1;
         }
 
         DestroyTask(taskId);
@@ -2076,13 +2076,13 @@ void sub_8141D7C(u8 taskId)
 
 void sub_8141DAC(u8 taskId)
 {
-    if (ewram17840.unk0 == 83)
+    if (gBattleSprites_animationData.unk0 == 83)
         gBattleAnimArgs[0] = 1;
-    else if (ewram17840.unk0 == 250)
+    else if (gBattleSprites_animationData.unk0 == 250)
         gBattleAnimArgs[0] = 2;
-    else if (ewram17840.unk0 == 128)
+    else if (gBattleSprites_animationData.unk0 == 128)
         gBattleAnimArgs[0] = 3;
-    else if (ewram17840.unk0 == 328)
+    else if (gBattleSprites_animationData.unk0 == 328)
         gBattleAnimArgs[0] = 4;
     else
         gBattleAnimArgs[0] = 0;
@@ -2092,7 +2092,7 @@ void sub_8141DAC(u8 taskId)
 
 void sub_8141E10(u8 taskId)
 {
-    gBattleAnimAttacker = ewram17840.unk0;
-    gBattleAnimTarget = ewram17840.unk0 >> 8;
+    gBattleAnimAttacker = gBattleSprites_animationData.unk0;
+    gBattleAnimTarget = gBattleSprites_animationData.unk0 >> 8;
     DestroyAnimVisualTask(taskId);
 }

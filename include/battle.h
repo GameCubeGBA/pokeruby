@@ -685,7 +685,7 @@ u8 TypeCalc(u16 move, u8 bank_atk, u8 bank_def);
 u8 GetBattlerTurnOrderNum(u8 bank);
 
 // asm/battle_5.o
-void nullsub_91(void);
+void BattleControllerDummy(void);
 void SetBankFuncToPlayerBufferRunCommand(void);
 void sub_802C098();
 void c3_0802FDF4(u8);
@@ -696,14 +696,14 @@ void sub_802E424(void);
 
 // asm/battle_7.o
 void move_anim_start_t4(u8 a, u8 b, u8 c, u8 d);
-void nullsub_9(u16);
-void nullsub_10(int);
+void BattleGfxSfxDummy2(u16);
+void BattleGfxSfxDummy3(int);
 void load_gfxc_health_bar(u8);
 u8 battle_load_something();
-void sub_8031F88(u8);
+void CopyBattleSpriteInvisibility(u8);
 void HandleLowHpMusicChange(struct Pokemon *, u8);
 void sub_8032638();
-void sub_8032AA8(u8, u8);
+void ClearTemporarySpeciesSpriteData(u8, u8);
 void SetBankFuncToOpponentBufferRunCommand(void);
 void BattleStopLowHpSound(void);
 void sub_8031FC4(u8, u8, bool8);

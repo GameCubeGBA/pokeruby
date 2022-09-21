@@ -35,7 +35,7 @@ extern u32 gTransformedPersonalities[];
 extern struct Window gWindowTemplate_Contest_MoveDescription;
 extern void (*gBattlerControllerFuncs[])(void);
 extern u8 gHealthboxSpriteIds[];
-extern u8 gUnknown_0300434C[];
+extern u8 gBattleControllerData[];
 extern struct MusicPlayerInfo gMPlayInfo_SE1;
 extern struct MusicPlayerInfo gMPlayInfo_SE2;
 extern struct MusicPlayerInfo gMPlayInfo_BGM;
@@ -94,10 +94,10 @@ const struct SpritePalette gUnknown_0820A4D4[] =
 };
 
 extern void c3_0802FDF4(u8);
-extern void sub_804777C();
+extern void StartHealthboxSlideIn();
 extern u8 IsBankSpritePresent(u8);
-extern u8 sub_8077F68(u8);
-extern u8 sub_8077F7C(u8);
+extern u8 GetBattlerSpriteDefault_Y(u8);
+extern u8 GetSubstituteSpriteDefault_Y(u8);
 extern void sub_8094958(void);
 extern void sub_80105DC(struct Sprite *);
 extern void move_anim_start_t2();
@@ -112,7 +112,7 @@ void sub_80327CC(void);
 void sub_8032978(struct Sprite *);
 void sub_80328A4(struct Sprite *);
 
-void sub_80312F0(struct Sprite *sprite)
+void SpriteCB_WaitForBattlerBallReleaseAnim(struct Sprite *sprite)
 {
     u8 spriteId = sprite->data[1];
 
@@ -152,7 +152,7 @@ void sub_80313A0(struct Sprite *sprite)
 
 void move_anim_start_t2_for_situation(u8 a, u32 b)
 {
-    ewram17810[gActiveBattler].unk0_4 = 1;
+    gBattleSprites_healthBoxesData[gActiveBattler].unk0_4 = 1;
     if (a == 0)
     {
         if (b == 0x20)
@@ -166,7 +166,7 @@ void move_anim_start_t2_for_situation(u8 a, u32 b)
         else if (b == 0x40)
             move_anim_start_t2(gActiveBattler, 5);
         else
-            ewram17810[gActiveBattler].unk0_4 = 0;
+            gBattleSprites_healthBoxesData[gActiveBattler].unk0_4 = 0;
     }
     else
     {
@@ -181,7 +181,7 @@ void move_anim_start_t2_for_situation(u8 a, u32 b)
         else if (b & 0x0000E000)
             move_anim_start_t2(gActiveBattler, 9);
         else
-            ewram17810[gActiveBattler].unk0_4 = 0;
+            gBattleSprites_healthBoxesData[gActiveBattler].unk0_4 = 0;
     }
 }
 
@@ -204,11 +204,11 @@ bool8 move_anim_start_t3(u8 a, u8 b, u8 c, u8 d, u16 e)
     }
     gBattleAnimAttacker = b;
     gBattleAnimTarget = c;
-    ewram17840.unk0 = e;
+    gBattleSprites_animationData.unk0 = e;
     LaunchBattleAnimation(gBattleAnims_General, d, 0);
     taskId = CreateTask(sub_80315E8, 10);
     gTasks[taskId].data[0] = a;
-    ewram17810[gTasks[taskId].data[0]].unk0_5 = 1;
+    gBattleSprites_healthBoxesData[gTasks[taskId].data[0]].unk0_5 = 1;
     return FALSE;
 }
 
@@ -217,7 +217,7 @@ void sub_80315E8(u8 taskId)
     gAnimScriptCallback();
     if (!gAnimScriptActive)
     {
-        ewram17810[gTasks[taskId].data[0]].unk0_5 = 0;
+        gBattleSprites_healthBoxesData[gTasks[taskId].data[0]].unk0_5 = 0;
         DestroyTask(taskId);
     }
 }
@@ -247,7 +247,7 @@ void move_anim_start_t4(u8 a, u8 b, u8 c, u8 d)
     LaunchBattleAnimation(gBattleAnims_Special, d, 0);
     taskId = CreateTask(sub_80316CC, 10);
     gTasks[taskId].data[0] = a;
-    ewram17810[gTasks[taskId].data[0]].unk0_6 = 1;
+    gBattleSprites_healthBoxesData[gTasks[taskId].data[0]].unk0_6 = 1;
 }
 
 void sub_80316CC(u8 taskId)
@@ -255,7 +255,7 @@ void sub_80316CC(u8 taskId)
     gAnimScriptCallback();
     if (!gAnimScriptActive)
     {
-        ewram17810[gTasks[taskId].data[0]].unk0_6 = 0;
+        gBattleSprites_healthBoxesData[gTasks[taskId].data[0]].unk0_6 = 0;
         DestroyTask(taskId);
     }
 }
@@ -271,15 +271,15 @@ bool8 mplay_80342A4(u8 a)
 
     if (IsSEPlaying())
     {
-        ewram17810[a].unk8++;
-        if (ewram17810[gActiveBattler].unk8 < 30)
+        gBattleSprites_healthBoxesData[a].unk8++;
+        if (gBattleSprites_healthBoxesData[gActiveBattler].unk8 < 30)
             return TRUE;
         MPlayStop(&gMPlayInfo_SE1);
         MPlayStop(&gMPlayInfo_SE2);
     }
     if (zero == 0)
     {
-        ewram17810[a].unk8 = 0;
+        gBattleSprites_healthBoxesData[a].unk8 = 0;
         return FALSE;
     }
     return TRUE;
@@ -393,7 +393,7 @@ void unref_sub_8031A64(void)
 {
 }
 
-void nullsub_9(u16 unused)
+void BattleGfxSfxDummy2(u16 unused)
 {
 }
 
@@ -432,7 +432,7 @@ void LoadPlayerTrainerBankSprite(u16 a, u8 b)
     LoadCompressedPalette(gTrainerBackPicPaletteTable[a].data, 0x100 + b * 16, 32);
 }
 
-void nullsub_10(int unused)
+void BattleGfxSfxDummy3(int unused)
 {
 }
 
@@ -579,13 +579,13 @@ u8 battle_load_something(u8 *pState, u8 *b)
         if (GetBattlerSide(*b) == 0)
         {
             if (!(gBattleTypeFlags & 0x80))
-                sub_8045A5C(gHealthboxSpriteIds[*b], &gPlayerParty[gBattlerPartyIndexes[*b]], 0);
+                UpdateHealthboxAttribute(gHealthboxSpriteIds[*b], &gPlayerParty[gBattlerPartyIndexes[*b]], 0);
         }
         else
         {
-            sub_8045A5C(gHealthboxSpriteIds[*b], &gEnemyParty[gBattlerPartyIndexes[*b]], 0);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[*b], &gEnemyParty[gBattlerPartyIndexes[*b]], 0);
         }
-        sub_8043DB0(gHealthboxSpriteIds[*b]);
+        SetHealthboxSpriteInvisible(gHealthboxSpriteIds[*b]);
         (*b)++;
         if (*b == gBattlersCount)
         {
@@ -604,8 +604,8 @@ u8 battle_load_something(u8 *pState, u8 *b)
 
 void sub_8031EE8(void)
 {
-    memset(ewram17810, 0, 0x30);
-    memset(&ewram17840, 0, 0x10);
+    memset(gBattleSprites_healthBoxesData, 0, 0x30);
+    memset(&gBattleSprites_animationData, 0, 0x10);
 }
 
 void sub_8031F0C(void)
@@ -622,7 +622,7 @@ void sub_8031F24(void)
         gBattleSpriteInfo[i].invisible = gSprites[gBattlerSpriteIds[i]].invisible;
 }
 
-void sub_8031F88(u8 a)
+void CopyBattleSpriteInvisibility(u8 a)
 {
     gBattleSpriteInfo[a].invisible = gSprites[gBattlerSpriteIds[a]].invisible;
 }
@@ -638,16 +638,16 @@ void sub_8031FC4(u8 a, u8 b, bool8 c)
 
     if (c)
     {
-        StartSpriteAnim(&gSprites[gBattlerSpriteIds[a]], ewram17840.unk0);
+        StartSpriteAnim(&gSprites[gBattlerSpriteIds[a]], gBattleSprites_animationData.unk0);
         paletteOffset = 0x100 + a * 16;
-        LoadPalette(ewram16400 + ewram17840.unk0 * 32, paletteOffset, 32);
-        gBattleMonForms[a] = ewram17840.unk0;
+        LoadPalette(ewram16400 + gBattleSprites_animationData.unk0 * 32, paletteOffset, 32);
+        gBattleMonForms[a] = gBattleSprites_animationData.unk0;
         if (gBattleSpriteInfo[a].transformedSpecies != 0)
         {
             BlendPalette(paletteOffset, 16, 6, RGB(31, 31, 31));
             CpuCopy32(gPlttBufferFaded + paletteOffset, gPlttBufferUnfaded + paletteOffset, 32);
         }
-        gSprites[gBattlerSpriteIds[a]].y = sub_8077F68(a);
+        gSprites[gBattlerSpriteIds[a]].y = GetBattlerSpriteDefault_Y(a);
     }
     else
     {
@@ -719,7 +719,7 @@ void sub_8031FC4(u8 a, u8 b, bool8 c)
             gBattleSpriteInfo[a].transformedSpecies = species;
             gBattleMonForms[a] = gBattleMonForms[b];
         }
-        gSprites[gBattlerSpriteIds[a]].y = sub_8077F68(a);
+        gSprites[gBattlerSpriteIds[a]].y = GetBattlerSpriteDefault_Y(a);
         StartSpriteAnim(&gSprites[gBattlerSpriteIds[a]], gBattleMonForms[a]);
     }
 }
@@ -769,9 +769,9 @@ void refresh_graphics_maybe(u8 a, u8 b, u8 spriteId)
     BattleLoadSubstituteSprite(a, b);
     StartSpriteAnim(&gSprites[spriteId], gBattleMonForms[a]);
     if (b == 0)
-        gSprites[spriteId].y = sub_8077F7C(a);
+        gSprites[spriteId].y = GetSubstituteSpriteDefault_Y(a);
     else
-        gSprites[spriteId].y = sub_8077F68(a);
+        gSprites[spriteId].y = GetBattlerSpriteDefault_Y(a);
 }
 
 void sub_80324BC(u8 a, u16 b)
@@ -852,7 +852,7 @@ void sub_8032638(void)
     }
 }
 
-void sub_80326EC(u8 a)
+void SetBattlerSpriteAffineMode(u8 a)
 {
     s32 i;
 
@@ -863,12 +863,12 @@ void sub_80326EC(u8 a)
             gSprites[gBattlerSpriteIds[i]].oam.affineMode = a;
             if (a == 0)
             {
-                ewram17810[i].unk6 = gSprites[gBattlerSpriteIds[i]].oam.matrixNum;
+                gBattleSprites_healthBoxesData[i].unk6 = gSprites[gBattlerSpriteIds[i]].oam.matrixNum;
                 gSprites[gBattlerSpriteIds[i]].oam.matrixNum = 0;
             }
             else
             {
-                gSprites[gBattlerSpriteIds[i]].oam.matrixNum = ewram17810[i].unk6;
+                gSprites[gBattlerSpriteIds[i]].oam.matrixNum = gBattleSprites_healthBoxesData[i].unk6;
             }
         }
     }
@@ -880,13 +880,13 @@ void sub_80327CC(void)
 
     LoadCompressedObjectPic(&gUnknown_081FAF24);
     r5 = GetBattlerAtPosition(1);
-    ewram17810[r5].unk7 = CreateSprite(&gSpriteTemplate_81FAF34, GetBattlerSpriteCoord(r5, 0), GetBattlerSpriteCoord(r5, 1) + 32, 0xC8);
-    gSprites[ewram17810[r5].unk7].data[0] = r5;
+    gBattleSprites_healthBoxesData[r5].unk7 = CreateSprite(&gSpriteTemplate_81FAF34, GetBattlerSpriteCoord(r5, 0), GetBattlerSpriteCoord(r5, 1) + 32, 0xC8);
+    gSprites[gBattleSprites_healthBoxesData[r5].unk7].data[0] = r5;
     if (IsDoubleBattle())
     {
         r5 = GetBattlerAtPosition(3);
-        ewram17810[r5].unk7 = CreateSprite(&gSpriteTemplate_81FAF34, GetBattlerSpriteCoord(r5, 0), GetBattlerSpriteCoord(r5, 1) + 32, 0xC8);
-        gSprites[ewram17810[r5].unk7].data[0] = r5;
+        gBattleSprites_healthBoxesData[r5].unk7 = CreateSprite(&gSpriteTemplate_81FAF34, GetBattlerSpriteCoord(r5, 0), GetBattlerSpriteCoord(r5, 1) + 32, 0xC8);
+        gSprites[gBattleSprites_healthBoxesData[r5].unk7].data[0] = r5;
     }
 }
 
@@ -924,15 +924,15 @@ void sub_8032984(u8 a, u16 b)
         if (gBattleSpriteInfo[a].transformedSpecies != 0)
             b = gBattleSpriteInfo[a].transformedSpecies;
         if (gEnemyMonElevation[b] != 0)
-            gSprites[ewram17810[a].unk7].callback = sub_80328A4;
+            gSprites[gBattleSprites_healthBoxesData[a].unk7].callback = sub_80328A4;
         else
-            gSprites[ewram17810[a].unk7].callback = sub_8032978;
+            gSprites[gBattleSprites_healthBoxesData[a].unk7].callback = sub_8032978;
     }
 }
 
 void sub_8032A08(u8 a)
 {
-    gSprites[ewram17810[a].unk7].callback = sub_8032978;
+    gSprites[gBattleSprites_healthBoxesData[a].unk7].callback = sub_8032978;
 }
 
 void sub_8032A38(void)
@@ -958,7 +958,7 @@ void sub_8032A38(void)
     }
 }
 
-void sub_8032AA8(u8 a, u8 b)
+void ClearTemporarySpeciesSpriteData(u8 a, u8 b)
 {
     gBattleSpriteInfo[a].transformedSpecies = 0;
     gBattleMonForms[a] = 0;

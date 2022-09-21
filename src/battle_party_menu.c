@@ -330,7 +330,7 @@ void unref_sub_8094DB0(void)
     }
 }
 
-void sub_8094E20(u8 a)
+void FreeWindowBufferAndOpenPartyMenuInBattle(u8 a)
 {
     gPaletteFade.bufferTransferDisabled = TRUE;
     gUnknown_02038473 = a;
@@ -341,7 +341,7 @@ void sub_8094E20(u8 a)
 
 void sub_8094E4C(void)
 {
-    sub_8094E20(3);
+    FreeWindowBufferAndOpenPartyMenuInBattle(3);
 }
 
 bool8 SetUpBattlePartyMenu(void)

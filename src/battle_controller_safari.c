@@ -46,7 +46,7 @@ extern u8 GetBattlerSubpriority();
 extern void sub_80313A0(struct Sprite *);
 extern void sub_810BADC(void);
 extern void StartBattleIntroAnim();
-extern void sub_804777C();
+extern void StartHealthboxSlideIn();
 extern bool8 move_anim_start_t3();
 
 #if ENGLISH
@@ -272,7 +272,7 @@ void bx_battle_menu_t6_2(void)
 #if DEBUG
     else if (gMain.newKeys & R_BUTTON)
     {
-        if (!ewram17810[gActiveBattler].unk0_5)
+        if (!gBattleSprites_healthBoxesData[gActiveBattler].unk0_5)
             move_anim_start_t3(gActiveBattler, gActiveBattler, gActiveBattler, 4, 0);
     }
     else if (gMain.newKeys & START_BUTTON)
@@ -306,7 +306,7 @@ void sub_812B6AC(void)
 
 void bx_wait_t6(void)
 {
-    if (!gDoingBattleAnim || !ewram17810[gActiveBattler].unk0_6)
+    if (!gDoingBattleAnim || !gBattleSprites_healthBoxesData[gActiveBattler].unk0_6)
         SafariBufferExecCompleted();
 }
 
@@ -330,7 +330,7 @@ void sub_812B758(void)
 
 void sub_812B794(void)
 {
-    if (!ewram17810[gActiveBattler].unk0_5)
+    if (!gBattleSprites_healthBoxesData[gActiveBattler].unk0_5)
         SafariBufferExecCompleted();
 }
 
@@ -352,7 +352,7 @@ void SafariBufferExecCompleted(void)
 
 void unref_sub_812B838(void)
 {
-    if (!ewram17810[gActiveBattler].unk0_4)
+    if (!gBattleSprites_healthBoxesData[gActiveBattler].unk0_4)
         SafariBufferExecCompleted();
 }
 
@@ -429,7 +429,7 @@ void SafariHandlecmd11(void)
 
 void SafariHandlecmd12(void)
 {
-    ewram17840.unk8 = 4;
+    gBattleSprites_animationData.unk8 = 4;
     gDoingBattleAnim = 1;
     move_anim_start_t4(gActiveBattler, gActiveBattler, GetBattlerAtPosition(1), 4);
     gBattlerControllerFuncs[gActiveBattler] = bx_wait_t6;
@@ -439,7 +439,7 @@ void SafariHandleBallThrow(void)
 {
     u8 var = gBattleBufferA[gActiveBattler][1];
 
-    ewram17840.unk8 = var;
+    gBattleSprites_animationData.unk8 = var;
     gDoingBattleAnim = 1;
     move_anim_start_t4(gActiveBattler, gActiveBattler, GetBattlerAtPosition(1), 4);
     gBattlerControllerFuncs[gActiveBattler] = bx_wait_t6;
@@ -537,7 +537,7 @@ void SafariHandleExpBarUpdate(void)
 
 void SafariHandleStatusIconUpdate(void)
 {
-    sub_8045A5C(gHealthboxSpriteIds[gActiveBattler], &gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], 11);
+    UpdateHealthboxAttribute(gHealthboxSpriteIds[gActiveBattler], &gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], 11);
     SafariBufferExecCompleted();
 }
 
@@ -656,9 +656,9 @@ void SafariHandleIntroSlide(void)
 
 void SafariHandleTrainerBallThrow(void)
 {
-    sub_8045A5C(gHealthboxSpriteIds[gActiveBattler], &gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], 10);
-    sub_804777C(gActiveBattler);
-    sub_8043DFC(gHealthboxSpriteIds[gActiveBattler]);
+    UpdateHealthboxAttribute(gHealthboxSpriteIds[gActiveBattler], &gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], 10);
+    StartHealthboxSlideIn(gActiveBattler);
+    SetHealthboxSpriteVisible(gHealthboxSpriteIds[gActiveBattler]);
     SafariBufferExecCompleted();
 }
 

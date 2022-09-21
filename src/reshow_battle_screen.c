@@ -31,15 +31,15 @@ void BattleLoadOpponentMonSprite(struct Pokemon *, u8 bank);
 void BattleLoadPlayerMonSprite(struct Pokemon *, u8 bank);
 void BattleLoadSubstituteSprite(u8 bank, u8 b);
 void LoadPlayerTrainerBankSprite(u16 a0, u8 bank);
-u8 sub_8077F7C(u8 bank);
-u8 sub_8077F68(u8 bank);
+u8 GetSubstituteSpriteDefault_Y(u8 bank);
+u8 GetBattlerSpriteDefault_Y(u8 bank);
 void nullsub_11(u8 healthboxID, u8 a1);
-void sub_8043DB0(u8 bank);
+void SetHealthboxSpriteInvisible(u8 bank);
 u8 battle_make_oam_normal_battle(u8 bank);
 u8 battle_make_oam_safari_battle(void);
-void sub_8045A5C(u8 healthboxID, struct Pokemon*, u8);
+void UpdateHealthboxAttribute(u8 healthboxID, struct Pokemon*, u8);
 void sub_8043F44(u8 bank);
-void sub_8043DFC(u8 healthboxID);
+void SetHealthboxSpriteVisible(u8 healthboxID);
 
 // this file's functions
 static void CB2_ReshowBattleScreenAfterMenu(void);
@@ -227,9 +227,9 @@ static void sub_807B184(u8 bank)
         u8 posY;
 
         if (gBattleSpriteInfo[bank].substituteSprite)
-            posY = sub_8077F7C(bank);
+            posY = GetSubstituteSpriteDefault_Y(bank);
         else
-            posY = sub_8077F68(bank);
+            posY = GetBattlerSpriteDefault_Y(bank);
         if (GetBattlerSide(bank))
         {
             if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[bank]], MON_DATA_HP) == 0)
@@ -291,13 +291,13 @@ static void sub_807B508(u8 bank)
             healthboxID = battle_make_oam_normal_battle(bank);
         gHealthboxSpriteIds[bank] = healthboxID;
         sub_8043F44(bank);
-        sub_8043DFC(healthboxID);
+        SetHealthboxSpriteVisible(healthboxID);
         if (GetBattlerSide(bank))
-            sub_8045A5C(gHealthboxSpriteIds[bank], &gEnemyParty[gBattlerPartyIndexes[bank]], 0);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[bank], &gEnemyParty[gBattlerPartyIndexes[bank]], 0);
         else if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
-            sub_8045A5C(gHealthboxSpriteIds[bank], &gPlayerParty[gBattlerPartyIndexes[bank]], 10);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[bank], &gPlayerParty[gBattlerPartyIndexes[bank]], 10);
         else
-            sub_8045A5C(gHealthboxSpriteIds[bank], &gPlayerParty[gBattlerPartyIndexes[bank]], 0);
+            UpdateHealthboxAttribute(gHealthboxSpriteIds[bank], &gPlayerParty[gBattlerPartyIndexes[bank]], 0);
         if (GetBattlerPosition(bank) == 3 || GetBattlerPosition(bank) == 2)
             nullsub_11(gHealthboxSpriteIds[bank], 1);
         else
@@ -305,12 +305,12 @@ static void sub_807B508(u8 bank)
         if (GetBattlerSide(bank))
         {
             if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[bank]], MON_DATA_HP) == 0)
-                sub_8043DB0(healthboxID);
+                SetHealthboxSpriteInvisible(healthboxID);
         }
         else if (!(gBattleTypeFlags & BATTLE_TYPE_SAFARI))
         {
             if (GetMonData(&gPlayerParty[gBattlerPartyIndexes[bank]], MON_DATA_HP) == 0)
-                sub_8043DB0(healthboxID);
+                SetHealthboxSpriteInvisible(healthboxID);
         }
     }
 }

@@ -1238,5 +1238,5 @@ void CopyPlayerPartyMonToBattleData(u8 battleIndex, u8 partyIndex)
 
     gBattleMons[battleIndex].status2 = 0;
     sub_80157C4(battleIndex);
-    sub_8032AA8(battleIndex, 0);
+    ClearTemporarySpeciesSpriteData(battleIndex, 0);
 }

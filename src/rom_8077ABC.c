@@ -359,12 +359,12 @@ u8 sub_8077EE4(u8 slot, u8 a2)
     }
 }
 
-u8 sub_8077F68(u8 slot)
+u8 GetBattlerSpriteDefault_Y(u8 slot)
 {
     return GetBattlerSpriteCoord(slot, 4);
 }
 
-u8 sub_8077F7C(u8 slot)
+u8 GetSubstituteSpriteDefault_Y(u8 slot)
 {
     u16 var;
     if (GetBattlerSide(slot) != 0)
@@ -1168,7 +1168,7 @@ void PrepareBattlerSpriteForRotScale(u8 sprite, u8 objMode)
     gSprites[sprite].oam.objMode = objMode;
     gSprites[sprite].affineAnimPaused = TRUE;
     if (!IsContest() && !gSprites[sprite].oam.affineMode)
-        gSprites[sprite].oam.matrixNum = ewram17810[r7].unk6;
+        gSprites[sprite].oam.matrixNum = gBattleSprites_healthBoxesData[r7].unk6;
     gSprites[sprite].oam.affineMode = 3;
     CalcCenterToCornerVec(&gSprites[sprite], gSprites[sprite].oam.shape, gSprites[sprite].oam.size, gSprites[sprite].oam.affineMode);
 }

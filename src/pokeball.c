@@ -331,7 +331,7 @@ u8 StartSendOutMonAnimation(u16 a, u8 side)
     u8 taskId;
 
     gDoingBattleAnim = 1;
-    ewram17810[gActiveBattler].unk0_3 = 1;
+    gBattleSprites_healthBoxesData[gActiveBattler].unk0_3 = 1;
     taskId = CreateTask(SendOutMonAnimation, 5);
     gTasks[taskId].data[1] = a;
     gTasks[taskId].data[2] = side;
@@ -727,7 +727,7 @@ static void sub_8046C78(struct Sprite *sprite)
 
         species = GetMonData(mon, MON_DATA_SPECIES);
         if ((battler == GetBattlerAtPosition(0) || battler == GetBattlerAtPosition(1))
-         && IsDoubleBattle() && ewram17840.unk9_0)
+         && IsDoubleBattle() && gBattleSprites_animationData.unk9_0)
         {
             if (gBattleTypeFlags & BATTLE_TYPE_MULTI)
             {
@@ -740,7 +740,7 @@ static void sub_8046C78(struct Sprite *sprite)
             }
         }
 
-        if (!IsDoubleBattle() || !ewram17840.unk9_0)
+        if (!IsDoubleBattle() || !gBattleSprites_animationData.unk9_0)
             cryBehavior = 0;
         else if (battler == GetBattlerAtPosition(0) || battler == GetBattlerAtPosition(1))
             cryBehavior = 1;
@@ -793,12 +793,12 @@ static void sub_8046E9C(struct Sprite *sprite)
 
         gSprites[gBattlerSpriteIds[r4]].y2 = 0;
         gDoingBattleAnim = 0;
-        ewram17810[r4].unk0_3 = 0;
+        gBattleSprites_healthBoxesData[r4].unk0_3 = 0;
         FreeSpriteOamMatrix(sprite);
         DestroySprite(sprite);
         for (r3 = 0, i = 0; i < 4; i++)
         {
-            if (ewram17810[i].unk0_3 == 0)
+            if (gBattleSprites_healthBoxesData[i].unk0_3 == 0)
                 r3++;
         }
         if (r3 == 4)
@@ -830,7 +830,7 @@ static void sub_8046FBC(struct Sprite *sprite)
         DestroySprite(&gSprites[gBattlerSpriteIds[sprite->data[6]]]);
         DestroySpriteAndFreeResources(sprite);
         if (gMain.inBattle)
-            ewram17810[r7].unk0_3 = 0;
+            gBattleSprites_healthBoxesData[r7].unk0_3 = 0;
     }
 }
 
@@ -893,7 +893,7 @@ static void SendOutPlayerMonAnimation_Step1(struct Sprite *sprite)
             sprite->x2 = 0;
             sprite->data[6] = sprite->oam.affineParam & 0xFF;
             sprite->data[0] = 0;
-            if (IsDoubleBattle() && ewram17840.unk9_0 && sprite->data[6] == GetBattlerAtPosition(2))
+            if (IsDoubleBattle() && gBattleSprites_animationData.unk9_0 && sprite->data[6] == GetBattlerAtPosition(2))
                 sprite->callback = SendOutMonAnimation_Delay;
             else
                 sprite->callback = sub_8046C78;
@@ -918,7 +918,7 @@ static void SendOutOpponentMonAnimation_Step0(struct Sprite *sprite)
     if (sprite->data[0] > 15)
     {
         sprite->data[0] = 0;
-        if (IsDoubleBattle() && ewram17840.unk9_0 && sprite->data[6] == GetBattlerAtPosition(3))
+        if (IsDoubleBattle() && gBattleSprites_animationData.unk9_0 && sprite->data[6] == GetBattlerAtPosition(3))
             sprite->callback = SendOutMonAnimation_Delay;
         else
             sprite->callback = sub_8046C78;
@@ -1101,7 +1101,7 @@ void obj_delete_and_free_associated_resources_(struct Sprite *sprite)
     DestroySpriteAndFreeResources(sprite);
 }
 
-void sub_804777C(u8 a)
+void StartHealthboxSlideIn(u8 a)
 {
     struct Sprite *sprite = &gSprites[gHealthboxSpriteIds[a]];
 
