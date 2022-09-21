@@ -2526,7 +2526,7 @@ static void ScriptCmd_changebg(void)
 
 s8 BattleAnimAdjustPanning(s8 pan)
 {
-    if (!IsContest() && ewram17810[gBattleAnimAttacker].unk0_4)
+    if (!IsContest() && gBattleSprites_healthBoxesData[gBattleAnimAttacker].unk0_4)
     {
         if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
             pan = SOUND_PAN_TARGET;
@@ -2568,7 +2568,7 @@ s8 BattleAnimAdjustPanning(s8 pan)
 
 s8 BattleAnimAdjustPanning2(s8 pan)
 {
-    if (!IsContest() && ewram17810[gBattleAnimAttacker].unk0_4)
+    if (!IsContest() && gBattleSprites_healthBoxesData[gBattleAnimAttacker].unk0_4)
     {
         if (GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER)
             pan = SOUND_PAN_TARGET;

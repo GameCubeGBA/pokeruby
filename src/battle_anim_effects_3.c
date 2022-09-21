@@ -1748,8 +1748,8 @@ void AnimTask_RapinSpinMonElevation(u8 taskId)
     s16 var0;
     u8 toBG2;
     s16 var2;
-    s16 var3;
-    s16 var4;
+    //s16 var3;
+    //s16 var4;
     s16 i;
     struct ScanlineEffectParams scanlineParams;
     struct Task *task = &gTasks[taskId];
@@ -1880,7 +1880,7 @@ void AnimTask_TormentAttacker(u8 taskId)
 
 static void TormentAttacker_Step(u8 taskId)
 {
-    int var0, var1;
+//    int var0, var1;
     s16 x, y;
     u16 i, j;
     u8 spriteId;

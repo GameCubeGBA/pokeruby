@@ -87,7 +87,7 @@ void SetUpBattleVarsAndBirchPoochyena(void)
 
     for (i = 0; i < MAX_BATTLERS_COUNT; i++)
     {
-        gBattlerControllerFuncs[i] = nullsub_91;
+        gBattlerControllerFuncs[i] = BattleControllerDummy;
         gBattlerPositions[i] = 0xFF;
         gActionSelectionCursor[i] = 0;
         gMoveSelectionCursor[i] = 0;
@@ -300,6 +300,7 @@ void InitLinkBtlControllers(void)
     gBattlersCount = 4;
 }
 
+// DOUBLES_TAG
 static void SetBattlePartyIds(void)
 {
     s32 i, j;

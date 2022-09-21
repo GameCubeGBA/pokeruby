@@ -677,14 +677,14 @@ void sub_8043D84(u8 a, u8 b, u32 c, u32 d, u32 e)
     eBattleBars[a].currValue = -0x8000;
 }
 
-void sub_8043DB0(u8 a)
+void SetHealthboxSpriteInvisible(u8 a)
 {
     gSprites[a].invisible = TRUE;
     gSprites[gSprites[a].data[5]].invisible = TRUE;
     gSprites[gSprites[a].oam.affineParam].invisible = TRUE;
 }
 
-void sub_8043DFC(u8 a)
+void SetHealthboxSpriteVisible(u8 a)
 {
     gSprites[a].invisible = FALSE;
     gSprites[gSprites[a].data[5]].invisible = FALSE;
@@ -1037,7 +1037,7 @@ void SwapHpBarsWithHpText(void)
                 else
                 {
                     draw_status_ailment_maybe(gHealthboxSpriteIds[i]);
-                    sub_8045A5C(gHealthboxSpriteIds[i], &gPlayerParty[gBattlerPartyIndexes[i]], 5);
+                    UpdateHealthboxAttribute(gHealthboxSpriteIds[i], &gPlayerParty[gBattlerPartyIndexes[i]], 5);
                     CpuCopy32(GetHealthboxElementGfxPtr(0x75), OBJ_VRAM0 + 0x680 + gSprites[gHealthboxSpriteIds[i]].oam.tileNum * 32, 32);
                 }
             }
@@ -1061,9 +1061,9 @@ void SwapHpBarsWithHpText(void)
                 else
                 {
                     draw_status_ailment_maybe(gHealthboxSpriteIds[i]);
-                    sub_8045A5C(gHealthboxSpriteIds[i], &gEnemyParty[gBattlerPartyIndexes[i]], 5);
+                    UpdateHealthboxAttribute(gHealthboxSpriteIds[i], &gEnemyParty[gBattlerPartyIndexes[i]], 5);
                     if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
-                        sub_8045A5C(gHealthboxSpriteIds[i], &gEnemyParty[gBattlerPartyIndexes[i]], 4);
+                        UpdateHealthboxAttribute(gHealthboxSpriteIds[i], &gEnemyParty[gBattlerPartyIndexes[i]], 4);
                 }
             }
             gSprites[gHealthboxSpriteIds[i]].data[7] ^= 1;
@@ -1278,7 +1278,7 @@ u8 CreatePartyStatusSummarySprites(u8 a, const struct HpAndStatus *b, u8 c, u8 d
     return taskId;
 }
 
-void sub_8044CA0(u8 taskId)
+void Task_HidePartyStatusSummary(u8 taskId)
 {
     u8 sp[6];
     u8 r9;
@@ -1827,7 +1827,7 @@ static u8 sub_80457E8(u8 a, u8 b)
     }
 }
 
-void sub_8045A5C(u8 a, struct Pokemon *pkmn, u8 c)
+void UpdateHealthboxAttribute(u8 a, struct Pokemon *pkmn, u8 c)
 {
     u8 r10;
     u32 maxhp;
